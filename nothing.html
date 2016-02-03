@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
         <meta charset="utf-8" />
-        <title>Vechnology</title>
+        <title>My first</title>
         <link rel="stylesheet" href="/theme/css/main.css" />
 
         <!--[if IE]>
@@ -14,13 +14,18 @@
         <header id="banner" class="body">
                 <h1><a href="/">Vechnology </a></h1>
                 <nav><ul>
-                    <li><a href="/category/nothing.html">nothing</a></li>
+                    <li class="active"><a href="/category/nothing.html">nothing</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/nothing.html" rel="bookmark"
+           title="Permalink to My first">My first</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="/nothing.html">My first</a></h1>
+    <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2016-02-02T00:00:00+01:00">
                 Published: Tue 02 February 2016
@@ -31,7 +36,7 @@
         </address>
 <p>In <a href="/category/nothing.html">nothing</a>.</p>
 <p>tags: <a href="/tag/pelican.html">pelican</a> </p>
-</footer><!-- /.post-info --><h3>安装Pelican和Markdown</h3>
+</footer><!-- /.post-info -->      <h3>安装Pelican和Markdown</h3>
 <div class="highlight"><pre>pip install pelican
 pip install markdown
 </pre></div>
@@ -41,8 +46,11 @@ pip install markdown
 <div class="highlight"><pre>mkdir blog
 cd blog
 pelican-quickstart
-</pre></div>                </article>
-            </aside><!-- /#featured -->
+</pre></div>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>blogroll</h2>
