@@ -18,25 +18,179 @@
                 <h1><a href="/">HardCoreAI </a></h1>
                 <nav><ul>
                     <li><a href="/category/announcement.html">Announcement</a></li>
-                    <li><a href="/category/tial.html">tial</a></li>
+                    <li><a href="/category/machine_learning.html">Machine_Learning</a></li>
+                    <li><a href="/category/trial.html">trial</a></li>
                 </ul>
                 </nav>
         </header><!-- /#banner -->
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="/Introduction.html">Introduction</a></h1>
+                    <h1 class="entry-title"><a href="/regression_1_simple_regression.html">Regression_1_Simple_Regression</a></h1>
 <footer class="post-info">
-        <span>Sun 20 March 2016</span>
+        <span>Mon 21 March 2016</span>
+<span>| tags: <a href="/tag/regression.html">regression</a></span>
+</footer><!-- /.post-info --><h1>What is regression ?</h1>
+<p>I hate to talk about some concepts by reciting text books. In a very simple way to understand regression, it is a process from features to predictions. Given raw data, we extract features as input <strong>x</strong> and then learn the relationship between input <strong>x</strong> and output <strong>y</strong>. Finally we can use this relationship to predict new data. Well, you may think about the following interesting issues:  </p>
+<ul>
+<li>Salary after you read my blogs</li>
+<li>Stock prediction</li>
+<li>Tweet popularity</li>
+<li>Read your mind  </li>
+</ul>
+<p>Your salary may depends on if you really lean something from my blog plus if you implement models mentioned in my blog and so on(just kidding..); your company's stock price depends on recent history of stock price, new events, etc.; Your tweet's popularity depends on how many followers you have, topics, popularity of hashtag, or number of past tweets; Your minds will be displayed on fMRI images. These examples can be listed as long as you want. We can call the words appear after 'depends on' features and the issues we care about predictions.  </p>
+<h1>Simple regression</h1>
+<p>Here's a practical issue we have to deal with. Victor wants to buy a house on Long Island. He wants to estimate the house price. A very simple way is to predict the house price according to the square-feet of the house. So here we gets one variable <em>square-feet</em> as input, and the <em>price</em> as output. Our goal is to help Victor to find the relationship between input and output. It may be like what the figure shows.<br />
+<img alt="im3" src="/images/im3.png" /></p>
+<p>Actually we can describe the relationship via such a model:<br />
+</p>
+<div class="math">$$y_i = f(x_i) + \epsilon_i$$</div>
+<p><br />
+We hope \(E[\epsilon_i]= 0 \), i.e. the expectation of the error should be 0. It means we hope \(y_i \) is equally likely to be above or below the fitting curve. Then we may ask what the \(f \) is. There are so many models to choose like linear, quadratic or high-order polynomials. For simplicity, we take the linear model into account.<br />
+</p>
+<div class="math">$$ y_i = w_0 + w_1x_i + \epsilon_i$$</div>
+<p><br />
+Note that \(w_1 \) here means the per unit change in output per unit change in the input. So our goal becomes: to find the "best" line to minimize the errors. This goal can be described by following equation.<br />
+</p>
+<div class="math">$$min_{w_0,w_1} \sum_{i=1}^{N}  (y_i - [w_0+w_1x_i])^2$$</div>
+<p><br />
+This is the legend: redidual sum of square(RSS). It is a function \( g(w_0,w_1) \). If we draw this function we will get a surface in 3D space.</p>
+<p>Before we discuss the how to achieve our goal we need some side knowledge on convex and caoncave functions. There are strct math definition on this stuff but we don't have to dive into it. For intuitive understanding, we can imagine concave functions have a shape of "n", which means if we draw a line to connect two points on the concave curve, this line will lie under the curve. On the contrast, we can imagine convex functions have a shape of "u", which means if we draw a line to connect two pitns on the convex curve, this line will lie above the curve. A little quiz here: is our goal a convex or concave function? (Usually we can take the second derivative, positive means concave, negative means canvex).  </p>
+<h1>Find the maximum/minimum</h1>
+<p>We have several approaches to finish this task. The first one is to get the max or min analytically. we can set the derivative euqals to 0. It is a natural idea. We set it aside and come back later. The second one is gradient descent. We can imagine climbing a hill to find the max/min. it is like the following picture.  </p>
+<p><img alt="im4" src="/images/im4.png" /><br />
+Note that the horizontal axis means the value of \( w \). We move \( w \) left or right to adjust the result. How do we know whether to move \(w \) left or right? Seen from the picture above, it is easy to know when the first derivative is positive, we are at the right side of the minimum. So we want to decrease the \(w\) value. On the contrast, when the first derivative is negative, we are at the left side of the minimum. So we want to increase the \( w\) value. So to find the minimum we can use such an idea:  </p>
+<p>when \( \frac{dg(w)}{d(w)} = 0\), we stay where we are.<br />
+while not converged:<br />
+&ensp;&ensp;&ensp;&ensp;\(w^{(t+1)} \leftarrow w^{(t)}- \eta\frac{dg(w)}{d(w)} \)  </p>
+<p>Note that the \(t\) means the iteration times and the \( \eta \) means the stepsize. This iteration format is the favorite of computer scientists. We have some supplement material to know here.  </p>
+<ul>
+<li>Choosing the stepsize \( \eta\)<br />
+If we fixed the stepsize, e.g. let \( \eta\) be 0.1 It is high likely that we will end up with jumping around the optimal solution back and forth for many times, like a crazy dancer. How about 0.00001? We may wait for 300 years or more until the result converges. Any other options? Yes, we can let the stepsize decrease as the iteration increases. It means we slow down our step when we are approaching the final goal, like a thef not making big noise any more. Here are two common choices:  </li>
+</ul>
+<div class="math">$$ \eta_t = \frac{\alpha}{t}, \eta_t = \frac{\alpha}{\sqrt{t}} $$</div>
+<ul>
+<li>
+<p>Convergence criteria<br />
+Optimum occurs when \( \frac{dg(w)}{d(w)} =0 \). In practice, we stop when \( |\frac{dg(w)}{d(w)}| &lt; \epsilon \). The threshold should be set before we start our iteration. It represents how bad the result is we can accept.</p>
+</li>
+<li>
+<p>Multiple gradient gradients<br />
+Since we have more than one \( w\), so we should consider the gradient of multiple dimensions.<br />
+<div class="math">$$ \triangledown g(\vec{w}) = \left[ \begin{array}{c} \frac{\partial{g}}{\partial{w_0}} \\ \frac{\partial{g}}{\partial{w_1}} \\... \\ \frac{\partial{g}}{\partial{w_p}} \end{array}  \right] $$</div>
+<br />
+Never be afraid when it comes to high dimension space. The right part of the above equation is a \( p + 1\) dimensional vector. If we take each partial derivative into account, it is the same as the one \(w \) case. (Sorry for the meaningless sentence but it is true.) For example, \( g(\vec{w}) = 5w_0+10w_0w_1 + 2w_1^2 \), then we have 
+<div class="math">$$ \triangledown g(\vec{w}) = \left[ \begin{array}{c} 5 + 10w_1 \\ 10w_0 + 4w_1 \end{array}  \right] $$</div>
+<br />
+So easy that my mom never worries about my math any more. We can draw this simple example in a 3D space and take the bird view to get the contour plot. It is commonly used to display how the gradient descent works in high dimension space.<br />
+<img alt="im5" src="/images/im5.png" />
+<img alt="im6" src="/images/im6.png" />  </p>
+</li>
+</ul>
+<p>For multiple dimensions, our algorithm should be modified as follows:  </p>
+<p>--
+while not converged:  </p>
+<p>&ensp;&ensp;&ensp;&ensp;\(\vec{w}^{(t+1)} \leftarrow \vec{w}^{(t)}-\eta \triangledown g(\vec{w}^{(t)}) \)  </p>
+<p>--</p>
+<p>The convergence criteria is also changed. We consider the magnitude of \( ||\triangledown g(\vec{w})|| &lt; \epsilon \), where \( \epsilon \) is the threshold. If the condition is satisfied, we stop. Now let's go back to our goal: find the "best" line. We start from the RSS function.  </p>
+<div class="math">$$RSS(w_0, w_1)= (y_i - [w_0+w_1x_i])^2$$</div>
+<p>Take the derivative with respect to \( w_0, w_1 \) we have:  </p>
+<div class="math">\begin{aligned}
+\frac{\partial{RSS(w_0,w_1)}}{\partial{w_0}} &amp; = \sum_{i=1}^{N}-2\left[ y_i - (w_0 + w_1x_i) \right] \\\
+\frac{\partial{RSS(w_0,w_1)}}{\partial{w_0}} &amp; = \sum_{i=1}^{N}-2x_i\left[ y_i - (w_0 + w_1x_i) \right]
+\end{aligned}</div>
+<p>If we use the first approach to set the gradient as 0, then we have:<br />
+</p>
+<div class="math">\begin{aligned}
+\hat{w_0}=\frac{\sum_{i=1}^{N}y_i}{N}-\hat{w_1}\frac{\sum_{i=1}^{N}x_i}{N}\\\
+\hat{w_1}=\frac{\sum{y_ix_i} - \frac{\sum{y_i}\sum{x_i}}{N}}{\sum{x_i}^2 - \frac{\sum{x_i}\sum{x_i}}{N}}
+\end{aligned}</div>
+<p>I know you hate math. But we need to mention this. We can only compute \( \sum_{i=1}^{N}y_i, \sum_{i=1}^{N}x_i, \sum_{i=1}^{N}y_ix_i, \sum_{i=1}^{N}x_i^2 \), and use these four terms to get the estimation. The problems are not every function has closed-form solutions. Even it does, computing the corresponding terms is of high cost.  </p>
+<p>Now let's turn to the second approach. It can be described by the following equation.  </p>
+<div class="math">$$\vec{w}^{(t+1)} \leftarrow \vec{w}^{(t)} - \eta \left[ \begin{array}{c} \sum_{i=1}^{N}-2\left[ y_i - (w_0 + w_1x_i) \right] \\ \sum_{i=1}^{N}-2x_i\left[ y_i - (w_0 + w_1x_i) \right] \end{array}  \right]$$</div>
+<h1>One more thing</h1>
+<p>When it comes to practical problems, take care of the influence of high leverage points. These high leverage points may have a big influence on out fit. For example, Victor finds that within a small area of east point of Long Island lives a bounch of rich people. They own large houses worth a lot of money. It is not wise to take these points into account since they will leverage the whole level of the fit. Another issue shuold be mentioned here is the asymetric cost functions. Remember the RSS? </p>
+<div class="math">$$RSS(w_0,w_1) = \sum_{i=1}^{N}  (y_i - [w_0+w_1x_i])^2 $$</div>
+<p>  We see that underpredicting and overpredicting the price have same cost. What if cost of predicting house too high has bigger lost? It is very natural that if the predicted price is too high, then no body offers; if the predicted price is too low, then the customer offers lower price. It indicates that we want to underpredict the price. So visually the model fitting line by asymetric cost of function lies a little below the line by the RSS. Next we will talk about the multiple regression since Victor doesn't want to predict the price only by house size.  </p>
+<blockquote>
+<p>"Essentially, all models are wrong, but some are useful." George Box, 1987.</p>
+</blockquote>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
 
-</footer><!-- /.post-info --><h3>What is this blog used for?</h3>
-<p>&ensp;&ensp;Contents are mainly about basic concepts, methods, algorithms, hands-on experience in machine learning, or some summaries and solutions to little problems i met during the work experience. Also, i may write some interesting stories and poetry i wrote in Chinese. Technical comments are welcomed.</p>
-<h3>About me</h3>
-<p>&ensp;&ensp;Dreaming to be a pure mathematician or theoretical physicist but for the sake of IQ, i end up with being a normal person. Life sucks, but i love it. Stay hungry, stay foolish. Oh, sorry, i almost forget, Victor is my name. "You are so interesting" is my desired evaluation from others. So do not be shy, speak highly of me ASAP~  </p>                </article>
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>                </article>
             </aside><!-- /#featured -->
                 <section id="content" class="body">
                     <h1>Other articles</h1>
                     <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/Introduction.html" rel="bookmark"
+                           title="Permalink to Introduction">Introduction</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 20 March 2016</span>
+
+</footer><!-- /.post-info -->                <p>About me</p>
+                <a class="readmore" href="/Introduction.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
@@ -50,6 +204,21 @@
 <span>| tags: <a href="/tag/pelican.html">pelican</a><a href="/tag/publishing.html">publishing</a></span>
 </footer><!-- /.post-info -->                <p>Try some format</p>
                 <a class="readmore" href="/nothingnew.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/re.html" rel="bookmark"
+                           title="Permalink to First-Blog">First-Blog</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sat 19 March 2016</span>
+<span>| tags: <a href="/tag/pelican.html">pelican</a><a href="/tag/publishing.html">publishing</a></span>
+</footer><!-- /.post-info -->                <p>Try some format</p>
+                <a class="readmore" href="/re.html">read more</a>
                 </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
