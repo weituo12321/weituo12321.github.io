@@ -26,95 +26,71 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="/regression_1_simple_regression.html">Regression_1_Simple_Regression</a></h1>
+                    <h1 class="entry-title"><a href="/regression_2_multiple_regression.html">Regression_2_Multiple_Regression</a></h1>
 <footer class="post-info">
-        <span>Mon 21 March 2016</span>
+        <span>Sat 02 April 2016</span>
 <span>| tags: <a href="/tag/regression.html">regression</a></span>
-</footer><!-- /.post-info --><h1>What is regression ?</h1>
-<p>I hate to talk about some concepts by reciting text books. In a very simple way to understand regression, it is a process from features to predictions. Given raw data, we extract features as input <strong>x</strong> and then learn the relationship between input <strong>x</strong> and output <strong>y</strong>. Finally we can use this relationship to predict new data. Well, you may think about the following interesting issues:  </p>
-<ul>
-<li>Salary after you read my blogs</li>
-<li>Stock prediction</li>
-<li>Tweet popularity</li>
-<li>Read your mind  </li>
-</ul>
-<p>Your salary may depends on if you really lean something from my blog plus if you implement models mentioned in my blog and so on(just kidding..); your company's stock price depends on recent history of stock price, new events, etc.; Your tweet's popularity depends on how many followers you have, topics, popularity of hashtag, or number of past tweets; Your minds will be displayed on fMRI images. These examples can be listed as long as you want. We can call the words appear after 'depends on' features and the issues we care about predictions.  </p>
-<h1>Simple regression</h1>
-<p>Here's a practical issue we have to deal with. Victor wants to buy a house on Long Island. He wants to estimate the house price. A very simple way is to predict the house price according to the square-feet of the house. So here we gets one variable <em>square-feet</em> as input, and the <em>price</em> as output. Our goal is to help Victor to find the relationship between input and output. It may be like what the figure shows.<br />
-<img alt="im3" src="/images/im3.png" /></p>
-<p>Actually we can describe the relationship via such a model:<br />
+</footer><!-- /.post-info --><h1>Multiple Regression</h1>
+<p>For a simplicity, we start from a simple regression. We generate a polynomial model.  </p>
+<div class="math">$$y_i = w_0+w_1x_i+w_2x_i^2+...+w_px_i^p+\epsilon_i$$</div>
+<p>If we treat each order of x_i as a feature, then we may say it is a multiple regression with \(p+1\) features. Let's see a motivation application: detrending time series(My dear reader, i used to be good at signal processing, so do not fool around with me on that..). An example will be:  </p>
+<div class="math">$$y_i=w_0+w_1t_i+w_2sin(\frac{2\pi t_i}{12} -\phi)+\epsilon_i$$</div>
+<p>It is a periodic signal. Why is it? Because in summer good houses go quickly but in winter people prefer to stay inside house and not go outside to talk or make a deal. \(w_0t_i\) is the linear trend, the \(sin()\) is the seasonal component, a sinusoid with period 12 and the \( \phi \) is the unknown phase.(My dear reader, if you are not familiar with the concept, you can just forget it~ I will try to release the basic signal processing blogs later.) All right, let's do some high school math here.Since we have  </p>
+<div class="math">$$sin(a-b)=sin(a)cos(b)-cos(a)sin(b)$$</div>
+<p>So convert the seasonal component into:  </p>
+<div class="math">$$sin(\frac{2\pi t_i}{12} -\phi)=sin(\frac{2\pi t_i}{12})cos(\phi)-cos(\frac{2\pi t_i}{12})sin(\phi)$$</div>
+<p>Then we obtain  </p>
+<div class="math">$$y_i=w_0+w_it_i+w_2sin(\frac{2\pi t_i}{12})+w_3cos(\frac{2\pi t_i}{12})+\epsilon_i$$</div>
+<p>You can see that feature_1 is constant 1. Then feature_2 is t, feature_3 is \( sin(\frac{2\pi t_i}{12})\) and feature_4 is \( cos(\frac{2\pi t_i}{12})\). So sometimes it is a good reason to do the data visualization and data preprocessing! In this way we can choose the best model to represent the data. There are so many situations in which we should consider the seasonality. For example, in the weather modeling, the temperature, rainfall, cloud radiation and so many other factors are periodic. Other examples are flu monitoring, costume demand forcasting(like winter and summer), motion capture data, ECG/EEG, etc.  </p>
+<h1>Generic Basis Expansion</h1>
+<p>Instead of specific function, we can use function sign to represent the feature. So we have:  </p>
+<div class="math">$$y_i=w_0h_0(x_i)+w_1h_1(x_i)+w_2h_2(x_i)+...+w_Dh_D(x_i)+\epsilon_i$$</div>
+<p>Each \(h(x_i)\) represents a kind of function of \(x_i\). But it still only contains one attributes. Next we add more attributes. For example, in mind reading, features are brain region intensities. It is easy to do so. Just replace the single attributes with vector. That will be:  </p>
+<div class="math">$$y_i=w_0h_0(\vec{x_i})+w_1h_1(\vec{x_i})+w_2h_2(\vec{x_i})+...+w_Dh_D(\vec{x_i})+\epsilon_i$$</div>
+<p>Note that a function of a vector can be any kind of format. We can see clearly the difference of attributes and features. If we want to interpret the coefficients, we need to fix other features. We write the above function in a more generic notation.  </p>
+<div class="math">$$y_i=\sum_{j=0}^{D}w_jh_j(\vec{x_i})+\epsilon_i$$</div>
+<p>Note that it is a equation for one single data. Suppose we have \(N\) data points. There should be \(N\) equations. Now it is where linear algebra come for use. We continue to write it into matrix format.  </p>
+<div class="math">$$\vec{y}=H \bullet W + \vec{\epsilon}$$</div>
+<p>where \( \vec{y}\) is a column vector that contains all the \(N \) data target. \(H\) is a N-by-D dimension matrix(N data, each data has D features). \(W \) is the column vector of coefficients with length D. \( \vec{\epsilon} \) is a column vector with length N.(My dear reader, i strongly you write the matrix down to paper and check what exactly each row, each colum represents, who are scalars, who are vectors etc.) Next we will rewrite the RSS function in matrix format.  </p>
+<div class="math">$$RSS(\vec{w})=(\vec{y}-H\vec{w})^{T}\bullet(\vec{y}-H\vec{w})$$</div>
+<p>We know<br />
 </p>
-<div class="math">$$y_i = f(x_i) + \epsilon_i$$</div>
-<p><br />
-We hope \(E[\epsilon_i]= 0 \), i.e. the expectation of the error should be 0. It means we hope \(y_i \) is equally likely to be above or below the fitting curve. Then we may ask what the \(f \) is. There are so many models to choose like linear, quadratic or high-order polynomials. For simplicity, we take the linear model into account.<br />
-</p>
-<div class="math">$$ y_i = w_0 + w_1x_i + \epsilon_i$$</div>
-<p><br />
-Note that \(w_1 \) here means the per unit change in output per unit change in the input. So our goal becomes: to find the "best" line to minimize the errors. This goal can be described by following equation.<br />
-</p>
-<div class="math">$$min_{w_0,w_1} \sum_{i=1}^{N}  (y_i - [w_0+w_1x_i])^2$$</div>
-<p><br />
-This is the legend: redidual sum of square(RSS). It is a function \( g(w_0,w_1) \). If we draw this function we will get a surface in 3D space.</p>
-<p>Before we discuss the how to achieve our goal we need some side knowledge on convex and caoncave functions. There are strct math definition on this stuff but we don't have to dive into it. For intuitive understanding, we can imagine concave functions have a shape of "n", which means if we draw a line to connect two points on the concave curve, this line will lie under the curve. On the contrast, we can imagine convex functions have a shape of "u", which means if we draw a line to connect two pitns on the convex curve, this line will lie above the curve. A little quiz here: is our goal a convex or concave function? (Usually we can take the second derivative, positive means concave, negative means canvex).  </p>
-<h1>Find the maximum/minimum</h1>
-<p>We have several approaches to finish this task. The first one is to get the max or min analytically. we can set the derivative euqals to 0. It is a natural idea. We set it aside and come back later. The second one is gradient descent. We can imagine climbing a hill to find the max/min. it is like the following picture.  </p>
-<p><img alt="im4" src="/images/im4.png" /><br />
-Note that the horizontal axis means the value of \( w \). We move \( w \) left or right to adjust the result. How do we know whether to move \(w \) left or right? Seen from the picture above, it is easy to know when the first derivative is positive, we are at the right side of the minimum. So we want to decrease the \(w\) value. On the contrast, when the first derivative is negative, we are at the left side of the minimum. So we want to increase the \( w\) value. So to find the minimum we can use such an idea:  </p>
-<p>when \( \frac{dg(w)}{d(w)} = 0\), we stay where we are.<br />
+<div class="math">$$\vec{y}-H\vec{w}=\left[ \begin{array}{c} Residual_1 \\ Residual_2 \\ ... \\ Residual_N \end{array} \right]$$</div>
+<p>Guess what? Using above equation, we know  </p>
+<div class="math">$$RSS(\vec{w})=\sum_{i=1}^{N}Residual_i^2$$</div>
+<p>Remember this equation since it will be useful when we implement the algorithms.  </p>
+<h1>Get Maximum/Minimum</h1>
+<p>Still we have two approaches here. The first one is to set gradient \( = 0\).  </p>
+<div class="math">$$\triangledown RSS(\vec{w})=\triangledown \left[ (\vec{y}-H\vec{w})^{T}(\vec{y}-H\vec{w})\right]=-2H^{T}(\vec{y}-H\vec{w})$$</div>
+<p>Sorry I give the result directly, should spend some time on how to conduct this result. Anyway, let's look at the first approach.   </p>
+<div class="math">$$\triangledown RSS(\vec{w})=0 \Rightarrow -2H^{T}(\vec{y}-H\vec{w})=0$$</div>
+<p>So we have  </p>
+<div class="math">$$H^{T}\vec{y}=H^{T}H\vec{w}$$</div>
+<p>Two sides of the above equation left muliply \((H^{T}H)^{-1} \) and we obtain  </p>
+<div class="math">$$\hat{w}=(H^{T}H)^{-1}H^{T}\vec{y}$$</div>
+<p>We can see the deficits of closed-form solution.The \(H^{T}H \) is a D-by-D matrix. It is invertible only if it has full rank.(There are no redundant rows or columns.) In most cases, the number of observation of data \( N \) is much larger than the feature dimensions \( D\). And the complexity of inverse is usually \( O(D^{3}) \). That's why we prefer our second approach.  </p>
+<p>The second approach is gradient descent. Like the simple regression, we have:<br />
 while not converged:<br />
-&ensp;&ensp;&ensp;&ensp;\(w^{(t+1)} \leftarrow w^{(t)}- \eta\frac{dg(w)}{d(w)} \)  </p>
-<p>Note that the \(t\) means the iteration times and the \( \eta \) means the stepsize. This iteration format is the favorite of computer scientists. We have some supplement material to know here.  </p>
-<ul>
-<li>Choosing the stepsize \( \eta\)<br />
-If we fixed the stepsize, e.g. let \( \eta\) be 0.1 It is high likely that we will end up with jumping around the optimal solution back and forth for many times, like a crazy dancer. How about 0.00001? We may wait for 300 years or more until the result converges. Any other options? Yes, we can let the stepsize decrease as the iteration increases. It means we slow down our step when we are approaching the final goal, like a thef not making big noise any more. Here are two common choices:  </li>
-</ul>
-<div class="math">$$ \eta_t = \frac{\alpha}{t}, \eta_t = \frac{\alpha}{\sqrt{t}} $$</div>
-<ul>
-<li>
-<p>Convergence criteria<br />
-Optimum occurs when \( \frac{dg(w)}{d(w)} =0 \). In practice, we stop when \( |\frac{dg(w)}{d(w)}| &lt; \epsilon \). The threshold should be set before we start our iteration. It represents how bad the result is we can accept.</p>
-</li>
-<li>
-<p>Multiple gradient gradients<br />
-Since we have more than one \( w\), so we should consider the gradient of multiple dimensions.<br />
-<div class="math">$$ \triangledown g(\vec{w}) = \left[ \begin{array}{c} \frac{\partial{g}}{\partial{w_0}} \\ \frac{\partial{g}}{\partial{w_1}} \\... \\ \frac{\partial{g}}{\partial{w_p}} \end{array}  \right] $$</div>
-<br />
-Never be afraid when it comes to high dimension space. The right part of the above equation is a \( p + 1\) dimensional vector. If we take each partial derivative into account, it is the same as the one \(w \) case. (Sorry for the meaningless sentence but it is true.) For example, \( g(\vec{w}) = 5w_0+10w_0w_1 + 2w_1^2 \), then we have 
-<div class="math">$$ \triangledown g(\vec{w}) = \left[ \begin{array}{c} 5 + 10w_1 \\ 10w_0 + 4w_1 \end{array}  \right] $$</div>
-<br />
-So easy that my mom never worries about my math any more. We can draw this simple example in a 3D space and take the bird view to get the contour plot. It is commonly used to display how the gradient descent works in high dimension space.<br />
-<img alt="im5" src="/images/im5.png" />
-<img alt="im6" src="/images/im6.png" />  </p>
-</li>
-</ul>
-<p>For multiple dimensions, our algorithm should be modified as follows:  </p>
-<p>--
-while not converged:  </p>
-<p>&ensp;&ensp;&ensp;&ensp;\(\vec{w}^{(t+1)} \leftarrow \vec{w}^{(t)}-\eta \triangledown g(\vec{w}^{(t)}) \)  </p>
-<p>--</p>
-<p>The convergence criteria is also changed. We consider the magnitude of \( ||\triangledown g(\vec{w})|| &lt; \epsilon \), where \( \epsilon \) is the threshold. If the condition is satisfied, we stop. Now let's go back to our goal: find the "best" line. We start from the RSS function.  </p>
-<div class="math">$$RSS(w_0, w_1)= (y_i - [w_0+w_1x_i])^2$$</div>
-<p>Take the derivative with respect to \( w_0, w_1 \) we have:  </p>
-<div class="math">\begin{aligned}
-\frac{\partial{RSS(w_0,w_1)}}{\partial{w_0}} &amp; = \sum_{i=1}^{N}-2\left[ y_i - (w_0 + w_1x_i) \right] \\\
-\frac{\partial{RSS(w_0,w_1)}}{\partial{w_0}} &amp; = \sum_{i=1}^{N}-2x_i\left[ y_i - (w_0 + w_1x_i) \right]
-\end{aligned}</div>
-<p>If we use the first approach to set the gradient as 0, then we have:<br />
 </p>
-<div class="math">\begin{aligned}
-\hat{w_0}=\frac{\sum_{i=1}^{N}y_i}{N}-\hat{w_1}\frac{\sum_{i=1}^{N}x_i}{N}\\\
-\hat{w_1}=\frac{\sum{y_ix_i} - \frac{\sum{y_i}\sum{x_i}}{N}}{\sum{x_i}^2 - \frac{\sum{x_i}\sum{x_i}}{N}}
-\end{aligned}</div>
-<p>I know you hate math. But we need to mention this. We can only compute \( \sum_{i=1}^{N}y_i, \sum_{i=1}^{N}x_i, \sum_{i=1}^{N}y_ix_i, \sum_{i=1}^{N}x_i^2 \), and use these four terms to get the estimation. The problems are not every function has closed-form solutions. Even it does, computing the corresponding terms is of high cost.  </p>
-<p>Now let's turn to the second approach. It can be described by the following equation.  </p>
-<div class="math">$$\vec{w}^{(t+1)} \leftarrow \vec{w}^{(t)} - \eta \left[ \begin{array}{c} \sum_{i=1}^{N}-2\left[ y_i - (w_0 + w_1x_i) \right] \\ \sum_{i=1}^{N}-2x_i\left[ y_i - (w_0 + w_1x_i) \right] \end{array}  \right]$$</div>
-<h1>One more thing</h1>
-<p>When it comes to practical problems, take care of the influence of high leverage points. These high leverage points may have a big influence on out fit. For example, Victor finds that within a small area of east point of Long Island lives a bounch of rich people. They own large houses worth a lot of money. It is not wise to take these points into account since they will leverage the whole level of the fit. Another issue shuold be mentioned here is the asymetric cost functions. Remember the RSS? </p>
-<div class="math">$$RSS(w_0,w_1) = \sum_{i=1}^{N}  (y_i - [w_0+w_1x_i])^2 $$</div>
-<p>  We see that underpredicting and overpredicting the price have same cost. What if cost of predicting house too high has bigger lost? It is very natural that if the predicted price is too high, then no body offers; if the predicted price is too low, then the customer offers lower price. It indicates that we want to underpredict the price. So visually the model fitting line by asymetric cost of function lies a little below the line by the RSS. Next we will talk about the multiple regression since Victor doesn't want to predict the price only by house size.  </p>
-<blockquote>
-<p>"Essentially, all models are wrong, but some are useful." George Box, 1987.</p>
-</blockquote>
+<div class="math">$$\vec{w} \leftarrow \vec{w}^{(t)}-\eta(-2H^{T}(\vec{y}-H\vec{w}^{(t)}))$$</div>
+<p>In practical, we update the coefficient feature by feature. Let's start from the residual sum of square function. Remember the following equation? </p>
+<div class="math">$$RSS(\vec{w})=\sum_{i=1}^{N}[y_i-h(\vec{x_i})^{T}\vec{w}]^2$$</div>
+<p>We take the partial derivative with respect to \(w_j\) and get:  </p>
+<div class="math">$$\frac{\partial{RSS(\vec{w})}}{\partial{w_j}}=\sum_{i=1}^{N}2[y_i-h_0(x_i)w_0 - h_1(x_i)w_1-...-h_j(x_i)w_j-...h_D(x_i)w_D](-h_j(x_i))$$</div>
+<div class="math">$$=-2\sum_{i=1}^{N}h_j(x_i)[y_i-h(x_i)^{T}\vec{w}]$$</div>
+<p>So we can update \(j_{th}\) feature like this:  </p>
+<div class="math">$$w_j^{(t+1)} \leftarrow w_j^{(t)}+2\eta\sum_{i=1}^{N}h_j(\vec{x_i})(y_i-\hat{y_i}(w^{(t)}))$$</div>
+<p>In particular, \( \hat{y_i}(w^{(t)})\) means the predicted \( y_i\) calculated by \( w^{(t)}\).  </p>
+<p>So if we turn it into pseudo-code we can summaize the gradient descent algorithm as follows:  </p>
+<hr />
+<p>init \( \vec{w}^{(1)}=0 \) (or randomly or smartly), \( t=1\) means the first iteration<br />
+while \( ||\triangledown(RSS(w^{(t)}))|| &gt; \epsilon\):<br />
+for j=0,...D:<br />
+&ensp;&ensp;&ensp;&ensp;partial\([j]=-2\sum_{i=1}^{N}h_j(\vec{x_i})(y_i-\hat{y_i}(w^{(t)}))\)  </p>
+<p>&ensp;&ensp;&ensp;&ensp;\(w_j^{(t+1)} \leftarrow w_j^{(t)}-\eta\)partial\([j]\)  </p>
+<p>\(t \leftarrow t+1\)  </p>
+<hr />
+<p>Now we have a generic model and corresponding algorithm to solve this model. But how do we know which specific model is good? how to assess these models? To be continue... </p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -176,6 +152,21 @@ while not converged:  </p>
                 <section id="content" class="body">
                     <h1>Other articles</h1>
                     <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/regression_1_simple_regression.html" rel="bookmark"
+                           title="Permalink to Regression_1_Simple_Regression">Regression_1_Simple_Regression</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Mon 21 March 2016</span>
+<span>| tags: <a href="/tag/regression.html">regression</a></span>
+</footer><!-- /.post-info -->                <p>What is regression? In this article, i start from simple examples and extract out the basic model for regression problems. Then i will continue to talk about practical issues when we use the model to solve real problems.</p>
+                <a class="readmore" href="/regression_1_simple_regression.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
