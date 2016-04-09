@@ -26,71 +26,79 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="/regression_2_multiple_regression.html">Regression_2_Multiple_Regression</a></h1>
+                    <h1 class="entry-title"><a href="/regression_3_simple_regression.html">Regression_3_Simple_Regression</a></h1>
 <footer class="post-info">
-        <span>Sat 02 April 2016</span>
+        <span>Tue 05 April 2016</span>
 <span>| tags: <a href="/tag/regression.html">regression</a></span>
-</footer><!-- /.post-info --><h1>Multiple Regression</h1>
-<p>For a simplicity, we start from a simple regression. We generate a polynomial model.  </p>
-<div class="math">$$y_i = w_0+w_1x_i+w_2x_i^2+...+w_px_i^p+\epsilon_i$$</div>
-<p>If we treat each order of x_i as a feature, then we may say it is a multiple regression with \(p+1\) features. Let's see a motivation application: detrending time series(My dear reader, i used to be good at signal processing, so do not fool around with me on that..). An example will be:  </p>
-<div class="math">$$y_i=w_0+w_1t_i+w_2sin(\frac{2\pi t_i}{12} -\phi)+\epsilon_i$$</div>
-<p>It is a periodic signal. Why is it? Because in summer good houses go quickly but in winter people prefer to stay inside house and not go outside to talk or make a deal. \(w_0t_i\) is the linear trend, the \(sin()\) is the seasonal component, a sinusoid with period 12 and the \( \phi \) is the unknown phase.(My dear reader, if you are not familiar with the concept, you can just forget it~ I will try to release the basic signal processing blogs later.) All right, let's do some high school math here.Since we have  </p>
-<div class="math">$$sin(a-b)=sin(a)cos(b)-cos(a)sin(b)$$</div>
-<p>So convert the seasonal component into:  </p>
-<div class="math">$$sin(\frac{2\pi t_i}{12} -\phi)=sin(\frac{2\pi t_i}{12})cos(\phi)-cos(\frac{2\pi t_i}{12})sin(\phi)$$</div>
-<p>Then we obtain  </p>
-<div class="math">$$y_i=w_0+w_it_i+w_2sin(\frac{2\pi t_i}{12})+w_3cos(\frac{2\pi t_i}{12})+\epsilon_i$$</div>
-<p>You can see that feature_1 is constant 1. Then feature_2 is t, feature_3 is \( sin(\frac{2\pi t_i}{12})\) and feature_4 is \( cos(\frac{2\pi t_i}{12})\). So sometimes it is a good reason to do the data visualization and data preprocessing! In this way we can choose the best model to represent the data. There are so many situations in which we should consider the seasonality. For example, in the weather modeling, the temperature, rainfall, cloud radiation and so many other factors are periodic. Other examples are flu monitoring, costume demand forcasting(like winter and summer), motion capture data, ECG/EEG, etc.  </p>
-<h1>Generic Basis Expansion</h1>
-<p>Instead of specific function, we can use function sign to represent the feature. So we have:  </p>
-<div class="math">$$y_i=w_0h_0(x_i)+w_1h_1(x_i)+w_2h_2(x_i)+...+w_Dh_D(x_i)+\epsilon_i$$</div>
-<p>Each \(h(x_i)\) represents a kind of function of \(x_i\). But it still only contains one attributes. Next we add more attributes. For example, in mind reading, features are brain region intensities. It is easy to do so. Just replace the single attributes with vector. That will be:  </p>
-<div class="math">$$y_i=w_0h_0(\vec{x_i})+w_1h_1(\vec{x_i})+w_2h_2(\vec{x_i})+...+w_Dh_D(\vec{x_i})+\epsilon_i$$</div>
-<p>Note that a function of a vector can be any kind of format. We can see clearly the difference of attributes and features. If we want to interpret the coefficients, we need to fix other features. We write the above function in a more generic notation.  </p>
-<div class="math">$$y_i=\sum_{j=0}^{D}w_jh_j(\vec{x_i})+\epsilon_i$$</div>
-<p>Note that it is a equation for one single data. Suppose we have \(N\) data points. There should be \(N\) equations. Now it is where linear algebra come for use. We continue to write it into matrix format.  </p>
-<div class="math">$$\vec{y}=H \bullet W + \vec{\epsilon}$$</div>
-<p>where \( \vec{y}\) is a column vector that contains all the \(N \) data target. \(H\) is a N-by-D dimension matrix(N data, each data has D features). \(W \) is the column vector of coefficients with length D. \( \vec{\epsilon} \) is a column vector with length N.(My dear reader, i strongly you write the matrix down to paper and check what exactly each row, each colum represents, who are scalars, who are vectors etc.) Next we will rewrite the RSS function in matrix format.  </p>
-<div class="math">$$RSS(\vec{w})=(\vec{y}-H\vec{w})^{T}\bullet(\vec{y}-H\vec{w})$$</div>
-<p>We know<br />
-</p>
-<div class="math">$$\vec{y}-H\vec{w}=\left[ \begin{array}{c} Residual_1 \\ Residual_2 \\ ... \\ Residual_N \end{array} \right]$$</div>
-<p>Guess what? Using above equation, we know  </p>
-<div class="math">$$RSS(\vec{w})=\sum_{i=1}^{N}Residual_i^2$$</div>
-<p>Remember this equation since it will be useful when we implement the algorithms.  </p>
-<h1>Get Maximum/Minimum</h1>
-<p>Still we have two approaches here. The first one is to set gradient \( = 0\).  </p>
-<div class="math">$$\triangledown RSS(\vec{w})=\triangledown \left[ (\vec{y}-H\vec{w})^{T}(\vec{y}-H\vec{w})\right]=-2H^{T}(\vec{y}-H\vec{w})$$</div>
-<p>Sorry I give the result directly, should spend some time on how to conduct this result. Anyway, let's look at the first approach.   </p>
-<div class="math">$$\triangledown RSS(\vec{w})=0 \Rightarrow -2H^{T}(\vec{y}-H\vec{w})=0$$</div>
-<p>So we have  </p>
-<div class="math">$$H^{T}\vec{y}=H^{T}H\vec{w}$$</div>
-<p>Two sides of the above equation left muliply \((H^{T}H)^{-1} \) and we obtain  </p>
-<div class="math">$$\hat{w}=(H^{T}H)^{-1}H^{T}\vec{y}$$</div>
-<p>We can see the deficits of closed-form solution.The \(H^{T}H \) is a D-by-D matrix. It is invertible only if it has full rank.(There are no redundant rows or columns.) In most cases, the number of observation of data \( N \) is much larger than the feature dimensions \( D\). And the complexity of inverse is usually \( O(D^{3}) \). That's why we prefer our second approach.  </p>
-<p>The second approach is gradient descent. Like the simple regression, we have:<br />
-while not converged:<br />
-</p>
-<div class="math">$$\vec{w} \leftarrow \vec{w}^{(t)}-\eta(-2H^{T}(\vec{y}-H\vec{w}^{(t)}))$$</div>
-<p>In practical, we update the coefficient feature by feature. Let's start from the residual sum of square function. Remember the following equation? </p>
-<div class="math">$$RSS(\vec{w})=\sum_{i=1}^{N}[y_i-h(\vec{x_i})^{T}\vec{w}]^2$$</div>
-<p>We take the partial derivative with respect to \(w_j\) and get:  </p>
-<div class="math">$$\frac{\partial{RSS(\vec{w})}}{\partial{w_j}}=\sum_{i=1}^{N}2[y_i-h_0(x_i)w_0 - h_1(x_i)w_1-...-h_j(x_i)w_j-...h_D(x_i)w_D](-h_j(x_i))$$</div>
-<div class="math">$$=-2\sum_{i=1}^{N}h_j(x_i)[y_i-h(x_i)^{T}\vec{w}]$$</div>
-<p>So we can update \(j_{th}\) feature like this:  </p>
-<div class="math">$$w_j^{(t+1)} \leftarrow w_j^{(t)}+2\eta\sum_{i=1}^{N}h_j(\vec{x_i})(y_i-\hat{y_i}(w^{(t)}))$$</div>
-<p>In particular, \( \hat{y_i}(w^{(t)})\) means the predicted \( y_i\) calculated by \( w^{(t)}\).  </p>
-<p>So if we turn it into pseudo-code we can summaize the gradient descent algorithm as follows:  </p>
-<hr />
-<p>init \( \vec{w}^{(1)}=0 \) (or randomly or smartly), \( t=1\) means the first iteration<br />
-while \( ||\triangledown(RSS(w^{(t)}))|| &gt; \epsilon\):<br />
-for j=0,...D:<br />
-&ensp;&ensp;&ensp;&ensp;partial\([j]=-2\sum_{i=1}^{N}h_j(\vec{x_i})(y_i-\hat{y_i}(w^{(t)}))\)  </p>
-<p>&ensp;&ensp;&ensp;&ensp;\(w_j^{(t+1)} \leftarrow w_j^{(t)}-\eta\)partial\([j]\)  </p>
-<p>\(t \leftarrow t+1\)  </p>
-<hr />
-<p>Now we have a generic model and corresponding algorithm to solve this model. But how do we know which specific model is good? how to assess these models? To be continue... </p>
+</footer><!-- /.post-info --><h1>Measuring loss</h1>
+<p>We can use \( L(y, f_\hat{w}(x)) \) to represent the loss function. Here we assume it is a symetric loss function, which means the loss for underpredicting equals overpredicting.Let's first take a look at the training error. Here we want to find \( \hat{w} \) to minimize the RSS on training data set. It is shown in the following figure.  </p>
+<p><img alt="im7" src="/images/im7.png" />  </p>
+<p>Formally we consider the average of loss on training data. It can be described as follows:  </p>
+<div class="math">$$\frac{1}{N}\sum_{i=1}^{N}(y_i-f_\hat{w}(x_i))^2$$</div>
+<p>where \( (y_i, x_i) \in\) train_data. OK, you are so smart to recognize it is actually RMSE(root mean square error). As we can see that if we draw training_error with respect to model complexity, we will see a decreasing curve. Will this curve eventually touch the horizontal axis as the model complexity increases? The answer is YES!  </p>
+<p><img alt="im8" src="/images/im8.png" />  </p>
+<p>So does a small training error mean good predictions? The answer should be NO. We can never be so sure since there is one exception: the training error is everything or all the data we get. It seldom happens but it is a corner case. We will come back to this issue later in this article.  </p>
+<p>How about generalization error, sometimes called true error? Generalization error seems not familiar with us. Let's say the house size around us usually follows a normal distribution. Similarly, the house price also follows a normal distribution given the house size. Following two figures explain how it looks like.  </p>
+<p><img alt="im9" src="/images/im9.png" />
+<img alt="im10" src="/images/im10.png" />  </p>
+<p>Since we can give a predicted price, and the true price follows a normal distribution. So the generalization error(true error) is the expectation of the loss between predicted price and true price. It means average over all possible (x,y) pairs weighted by how likely each is \( E_{x,y}[L(y, f_\hat{w}(x))]\). Imagine we draw price and house size in a 3D space. We pick out a slice of the column and look at the slice from its side. Then we will see a normal distribution. (I know it's a little tricky to describe it). Forget it and continue to see the generalization error and model complexity.  </p>
+<p>If the model is not that complex, it is likely lie around the center of the column. Then the loss is acceptable. If the model becomes more complex, then it may get closer along the wriggling center line. The generalization goes down.However, as the model complexity continue to increase, the fit line will be crazy. It goes beyond the column too much. So the generalization error increases. The following three figures show this process.  </p>
+<p><img alt="im11" src="/images/im11.png" />
+<img alt="im12" src="/images/im12.png" />
+<img alt="im13" src="/images/im13.png" />  </p>
+<p>So the curve describe relationship between the generalization error and model complexity looks like a "U"  </p>
+<p>How about test error? We can transform the equation used on train data to test data. The curve describing relationship between test error and model complexity looks liks vibration around the generalization error. It is because each set of test data is different from each other. So my teacher gave us a very useful figure to compare train error, true error, test error:  </p>
+<p><img alt="im14" src="/images/im14.png" />  </p>
+<p>Now we can talk about overfitting. Suppose current model uses parameter \( \hat{w}\). If there exists a model with estimated \( w'\) such that<br />
+1. training_error(\(\hat{w}\)) &lt; training_error(\(w'\))<br />
+2. true_error(\( \hat{w}\)) &gt; true_error(\( w'\))  </p>
+<p>Typically, if we have enough test points, we may get a good generalization error. But if not enough data points for training, we turn to validation or cross-validation for help.  </p>
+<h1>Sources of error</h1>
+<p>One may ask where these error come from? Can we kill all of them and get the perfect model in the universe? The answer is NO...Actually error comes from three sources: noise, bias and variance. Let's look at them one by one.  </p>
+<h4>Noise</h4>
+<p>Data is inherently noisy. Remember the concept in our physics class back to high school? We use the best instrument ruler and correct measuring way, we sometimes still get different length of our physics book. So for each data point we have:  </p>
+<div class="math">$$y_i=f_{w(true)}(x_i)+\epsilon_i$$</div>
+<p>The \( \epsilon_i\) is our old friend:noise. He goes nowhere and is irreducible.  </p>
+<h4>Bias</h4>
+<p>Bias can be described as the following equation:  </p>
+<div class="math">$$Bias(x) = f_{w(true)}(x)-f_{\bar{w}}(x)$$</div>
+<p>In particular, we have different sets of data, we train one set and get a \( w\), then we train another then get another \(w \). At last we have a lot of w. So we have an average fit,this average fit is \( f_{\bar{w}}(x)\). Bias is the difference between the average fit and the true fit. It means if our model is flexible enough to include the true fit. The following is an example of simple model  </p>
+<p><img alt="im15" src="/images/im15.png" /> </p>
+<h4>Variance</h4>
+<p>Variance means how much the specific fit varies from the expected fit. We can compare model with low complexity and high complexity in the following two figures.  </p>
+<p><img alt="im16" src="/images/im16.png" />
+<img alt="im17" src="/images/im17.png" />  </p>
+<p>So usually low complexity means low variance, high bias and high complexity means high variance, low bias. If we add or remove data points and refit, the model with high complexity may be very different from current curve since it is so flexible. So what model complexity should we use? We draw variance, bias and their combination on the same figure.  </p>
+<p><img alt="im18" src="/images/im18.png" />  </p>
+<p>Actually we have \(MSE = bias^2+variance\). It looks like a "U". The bottom of the "U" is our sweet point. Almost all the machine learning problems ask us to find the sweet point. But wait, can we really calculate the MSE value? We can't because we don't know the \( f_{w(true)} \) and can't get all possible sets of data. In a practical way, we still turn to validation or cross-validation method.  </p>
+<p>Lastly, we need to see the relationship between error and the amount of data. Given a model with complexity fixed, as the amount of data increases, the training error will increase because with few data points, fixed complexity model can fit those points well, but with more data points, the model gradually loses its control. On the contrast, the generalization error will decrease because with few data points the model can't tell too much about the true curve. However, the generalization error and training error will get closer to each other and the bias plus noise will always be there.  </p>
+<h1>Depth on sources of error</h1>
+<p>Alright, math time now. Let's take a closer look at the error of our model.  </p>
+<div class="math">$$Error=\sigma^2 +[bias(f_{\hat{w}})]^2+var(f_{\hat{w}})$$</div>
+<p>We check the expected prediction error on a specific data points \( x_{t}\). It is described as:  </p>
+<div class="math">$$L(y, f_{\hat{w}}(x))=(y-f_{\hat{w}}(x_t))^2$$</div>
+<p>So the expected prediction error at \( x_t\) is:  </p>
+<div class="math">$$E_{train}[(y-f_{\hat{w}}(x_t))^2]$$</div>
+<p>Here we will use a commonly used derivation trick called "add zero". The above error can be written as:  </p>
+<div class="math">$$E_{train}[((y_t-f_{w(true)}(x_t))+(f_{w(true)}(x_t)-f_{\hat{w}(train)}(x_t)))^2]$$</div>
+<div class="math">$$=E[(y-f)^2]+2E[(y-f)(f-\hat{f})+E[(f-\hat{f})^2]]$$</div>
+<div class="math">$$=\sigma^2+2E[y-f]E[f-\hat{f}]+MSE(\hat{f})$$</div>
+<p>In particular, \( E[y-f]=E[\epsilon]=0\), so finally we have:  </p>
+<div class="math">$$E_{train}[(y-f_\hat{w}(x_t))^2]=\sigma^2 + MSE(\hat{f})$$</div>
+<p>And  </p>
+<div class="math">$$MSE[f_{\hat{w}(true)}(x_t)]=E_{train}[(f-\hat{f})^2]$$</div>
+<p>We use the same "add zero" trick to simplify the MSE:</p>
+<div class="math">$$E_{train}[(f-\hat{f})^2]=E_{train}[((f-\bar{f})+(\bar{f}-f))^2]$$</div>
+<div class="math">$$=E_{train}[(f-\bar{f})^2]+2E_{train}[(f-\bar{f})(\bar{f}-\hat{f})]+E_{train}[(\hat{f}-\bar{f})^2]$$</div>
+<div class="math">$$=(f-\bar{f})^2+2(f-\bar{f})E[\bar{f}-\hat{f}]+E_{train}[(\hat{f}-\bar{f})^2]$$</div>
+<p>Note that \(f-\bar{f}=bias \), \( \bar{f}-E[\hat{f}]=0\) and also we have \(E_{train}[(\hat{f}-\bar{f})^2]=var(\hat{f}) \) and replace the corresponding term.  </p>
+<p>So, what we have now? Surprise~~It is:  </p>
+<div class="math">$$Error=\sigma^2+bias^2(\hat{f})+var(\hat{f})$$</div>
+<p>That is where three sources error come from~  </p>
+<h1>Model selection</h1>
+<p>For model selection we need to choose tuning paramters \( \lambda\) to control model complexity(e.g. degree of polynomial). So usually we divide data into train data, validation data, test data. We will never touch test data until we finalize our model. We select \( \lambda^*\) to minimize error on validation set. Then we approximate generalization error by test error. Typical splits follows the percentage like: 80%, 10%,10% or 50%,25%,25% for training, validation, testing set separately.  </p>
+<h1>Summary</h1>
+<p>So far, we have talked about simple regression, multiple regression and model assessment. Actually we can do a lot of fun stuff using these basic tools now. Since we have introduce some tuning parameters, next we will continue to talk more about tuning parameters and will cover ridge regression, LASSO, and kernel regression. Stay tune~</p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -152,6 +160,21 @@ for j=0,...D:<br />
                 <section id="content" class="body">
                     <h1>Other articles</h1>
                     <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/regression_2_multiple_regression.html" rel="bookmark"
+                           title="Permalink to Regression_2_Multiple_Regression">Regression_2_Multiple_Regression</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sat 02 April 2016</span>
+<span>| tags: <a href="/tag/regression.html">regression</a></span>
+</footer><!-- /.post-info -->                <p>What is regression? In this article, i start from simple examples and extract out the basic model for regression problems. Then i will continue to talk about practical issues when we use the model to solve real problems.</p>
+                <a class="readmore" href="/regression_2_multiple_regression.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
