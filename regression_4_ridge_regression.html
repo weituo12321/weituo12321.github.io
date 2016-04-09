@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
         <meta charset="utf-8" />
-        <title>HardCoreAI</title>
+        <title>Regression_4_Ridge_Regression</title>
         <link rel="stylesheet" href="/theme/css/main.css" />
 
         <!--[if IE]>
@@ -18,19 +18,24 @@
                 <h1><a href="/">HardCoreAI </a></h1>
                 <nav><ul>
                     <li><a href="/category/announcement.html">Announcement</a></li>
-                    <li><a href="/category/machine_learning.html">Machine_Learning</a></li>
+                    <li class="active"><a href="/category/machine_learning.html">Machine_Learning</a></li>
                     <li><a href="/category/trial.html">trial</a></li>
                 </ul>
                 </nav>
         </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/regression_4_ridge_regression.html" rel="bookmark"
+           title="Permalink to Regression_4_Ridge_Regression">Regression_4_Ridge_Regression</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="/regression_4_ridge_regression.html">Regression_4_Ridge_Regression</a></h1>
+    <div class="entry-content">
 <footer class="post-info">
         <span>Fri 08 April 2016</span>
 <span>| tags: <a href="/tag/regression.html">regression</a></span>
-</footer><!-- /.post-info --><h1>Tuning Parameter</h1>
+</footer><!-- /.post-info -->      <h1>Tuning Parameter</h1>
 <p>We know that complext models have low bias but high variance, simple models have high bias but low variance. Also we know error consist of bias and variance plus noise. A trade off between bias and variance is what we need. Also we gave the formal definition of overfitting. Usually the symptom of overfitting is \( ||w||\) becomes very large. Think about it, there are a lot of elements in \( \vec{w}\) or each element is very large(it means the model is very sensitive to train data, any change in train data will cause a large change on model). On the other hand, how does number of observations influence overfitting? For few observations, as model complexity increases, the model overfits rapidly. For many obvervations, as model complexity increases, the model overfits slowly.  </p>
 <p>So in addtion to the difference between real-value and predicted value, we add the magnitude of coefficients to our measure loss. So we now have:  </p>
 <div class="math">$$Cost = fitness + magnitude$$</div>
@@ -165,106 +170,11 @@
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-</script>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <ol id="posts-list" class="hfeed">
+</script>
+    </div><!-- /.entry-content -->
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/regression_3_simple_regression.html" rel="bookmark"
-                           title="Permalink to Regression_3_Simple_Regression">Regression_3_Simple_Regression</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Tue 05 April 2016</span>
-<span>| tags: <a href="/tag/regression.html">regression</a></span>
-</footer><!-- /.post-info -->                <p>We have generic models and algorithms to solve them. But we always have to worry about how much i am losing. If our model prediction is too low, then we only get low offers; if model prediction is too high, we get few looks and no offers. So this article will presents how to assess our models.</p>
-                <a class="readmore" href="/regression_3_simple_regression.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/regression_2_multiple_regression.html" rel="bookmark"
-                           title="Permalink to Regression_2_Multiple_Regression">Regression_2_Multiple_Regression</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sat 02 April 2016</span>
-<span>| tags: <a href="/tag/regression.html">regression</a></span>
-</footer><!-- /.post-info -->                <p>What is regression? In this article, i start from simple examples and extract out the basic model for regression problems. Then i will continue to talk about practical issues when we use the model to solve real problems.</p>
-                <a class="readmore" href="/regression_2_multiple_regression.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/regression_1_simple_regression.html" rel="bookmark"
-                           title="Permalink to Regression_1_Simple_Regression">Regression_1_Simple_Regression</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Mon 21 March 2016</span>
-<span>| tags: <a href="/tag/regression.html">regression</a></span>
-</footer><!-- /.post-info -->                <p>What is regression? In this article, i start from simple examples and extract out the basic model for regression problems. Then i will continue to talk about practical issues when we use the model to solve real problems.</p>
-                <a class="readmore" href="/regression_1_simple_regression.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/Introduction.html" rel="bookmark"
-                           title="Permalink to Introduction">Introduction</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sun 20 March 2016</span>
-
-</footer><!-- /.post-info -->                <p>About me</p>
-                <a class="readmore" href="/Introduction.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/nothingnew.html" rel="bookmark"
-                           title="Permalink to First-Blog">First-Blog</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sat 19 March 2016</span>
-<span>| tags: <a href="/tag/pelican.html">pelican</a><a href="/tag/publishing.html">publishing</a></span>
-</footer><!-- /.post-info -->                <p>Try some format</p>
-                <a class="readmore" href="/nothingnew.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/re.html" rel="bookmark"
-                           title="Permalink to First-Blog">First-Blog</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sat 19 March 2016</span>
-<span>| tags: <a href="/tag/pelican.html">pelican</a><a href="/tag/publishing.html">publishing</a></span>
-</footer><!-- /.post-info -->                <p>Try some format</p>
-                <a class="readmore" href="/re.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-            </ol><!-- /#posts-list -->
-<p class="paginator">
-    Page 1 / 1
-</p>
-            </section><!-- /#content -->
+  </article>
+</section>
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>blogroll</h2>

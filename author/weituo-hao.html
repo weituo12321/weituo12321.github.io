@@ -26,79 +26,89 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="/regression_3_simple_regression.html">Regression_3_Simple_Regression</a></h1>
+                    <h1 class="entry-title"><a href="/regression_4_ridge_regression.html">Regression_4_Ridge_Regression</a></h1>
 <footer class="post-info">
-        <span>Tue 05 April 2016</span>
+        <span>Fri 08 April 2016</span>
 <span>| tags: <a href="/tag/regression.html">regression</a></span>
-</footer><!-- /.post-info --><h1>Measuring loss</h1>
-<p>We can use \( L(y, f_\hat{w}(x)) \) to represent the loss function. Here we assume it is a symetric loss function, which means the loss for underpredicting equals overpredicting.Let's first take a look at the training error. Here we want to find \( \hat{w} \) to minimize the RSS on training data set. It is shown in the following figure.  </p>
-<p><img alt="im7" src="/images/im7.png" />  </p>
-<p>Formally we consider the average of loss on training data. It can be described as follows:  </p>
-<div class="math">$$\frac{1}{N}\sum_{i=1}^{N}(y_i-f_\hat{w}(x_i))^2$$</div>
-<p>where \( (y_i, x_i) \in\) train_data. OK, you are so smart to recognize it is actually RMSE(root mean square error). As we can see that if we draw training_error with respect to model complexity, we will see a decreasing curve. Will this curve eventually touch the horizontal axis as the model complexity increases? The answer is YES!  </p>
-<p><img alt="im8" src="/images/im8.png" />  </p>
-<p>So does a small training error mean good predictions? The answer should be NO. We can never be so sure since there is one exception: the training error is everything or all the data we get. It seldom happens but it is a corner case. We will come back to this issue later in this article.  </p>
-<p>How about generalization error, sometimes called true error? Generalization error seems not familiar with us. Let's say the house size around us usually follows a normal distribution. Similarly, the house price also follows a normal distribution given the house size. Following two figures explain how it looks like.  </p>
-<p><img alt="im9" src="/images/im9.png" />
-<img alt="im10" src="/images/im10.png" />  </p>
-<p>Since we can give a predicted price, and the true price follows a normal distribution. So the generalization error(true error) is the expectation of the loss between predicted price and true price. It means average over all possible (x,y) pairs weighted by how likely each is \( E_{x,y}[L(y, f_\hat{w}(x))]\). Imagine we draw price and house size in a 3D space. We pick out a slice of the column and look at the slice from its side. Then we will see a normal distribution. (I know it's a little tricky to describe it). Forget it and continue to see the generalization error and model complexity.  </p>
-<p>If the model is not that complex, it is likely lie around the center of the column. Then the loss is acceptable. If the model becomes more complex, then it may get closer along the wriggling center line. The generalization goes down.However, as the model complexity continue to increase, the fit line will be crazy. It goes beyond the column too much. So the generalization error increases. The following three figures show this process.  </p>
-<p><img alt="im11" src="/images/im11.png" />
-<img alt="im12" src="/images/im12.png" />
-<img alt="im13" src="/images/im13.png" />  </p>
-<p>So the curve describe relationship between the generalization error and model complexity looks like a "U"  </p>
-<p>How about test error? We can transform the equation used on train data to test data. The curve describing relationship between test error and model complexity looks liks vibration around the generalization error. It is because each set of test data is different from each other. So my teacher gave us a very useful figure to compare train error, true error, test error:  </p>
-<p><img alt="im14" src="/images/im14.png" />  </p>
-<p>Now we can talk about overfitting. Suppose current model uses parameter \( \hat{w}\). If there exists a model with estimated \( w'\) such that<br />
-1. training_error(\(\hat{w}\)) &lt; training_error(\(w'\))<br />
-2. true_error(\( \hat{w}\)) &gt; true_error(\( w'\))  </p>
-<p>Typically, if we have enough test points, we may get a good generalization error. But if not enough data points for training, we turn to validation or cross-validation for help.  </p>
-<h1>Sources of error</h1>
-<p>One may ask where these error come from? Can we kill all of them and get the perfect model in the universe? The answer is NO...Actually error comes from three sources: noise, bias and variance. Let's look at them one by one.  </p>
-<h4>Noise</h4>
-<p>Data is inherently noisy. Remember the concept in our physics class back to high school? We use the best instrument ruler and correct measuring way, we sometimes still get different length of our physics book. So for each data point we have:  </p>
-<div class="math">$$y_i=f_{w(true)}(x_i)+\epsilon_i$$</div>
-<p>The \( \epsilon_i\) is our old friend:noise. He goes nowhere and is irreducible.  </p>
-<h4>Bias</h4>
-<p>Bias can be described as the following equation:  </p>
-<div class="math">$$Bias(x) = f_{w(true)}(x)-f_{\bar{w}}(x)$$</div>
-<p>In particular, we have different sets of data, we train one set and get a \( w\), then we train another then get another \(w \). At last we have a lot of w. So we have an average fit,this average fit is \( f_{\bar{w}}(x)\). Bias is the difference between the average fit and the true fit. It means if our model is flexible enough to include the true fit. The following is an example of simple model  </p>
-<p><img alt="im15" src="/images/im15.png" /> </p>
-<h4>Variance</h4>
-<p>Variance means how much the specific fit varies from the expected fit. We can compare model with low complexity and high complexity in the following two figures.  </p>
-<p><img alt="im16" src="/images/im16.png" />
-<img alt="im17" src="/images/im17.png" />  </p>
-<p>So usually low complexity means low variance, high bias and high complexity means high variance, low bias. If we add or remove data points and refit, the model with high complexity may be very different from current curve since it is so flexible. So what model complexity should we use? We draw variance, bias and their combination on the same figure.  </p>
-<p><img alt="im18" src="/images/im18.png" />  </p>
-<p>Actually we have \(MSE = bias^2+variance\). It looks like a "U". The bottom of the "U" is our sweet point. Almost all the machine learning problems ask us to find the sweet point. But wait, can we really calculate the MSE value? We can't because we don't know the \( f_{w(true)} \) and can't get all possible sets of data. In a practical way, we still turn to validation or cross-validation method.  </p>
-<p>Lastly, we need to see the relationship between error and the amount of data. Given a model with complexity fixed, as the amount of data increases, the training error will increase because with few data points, fixed complexity model can fit those points well, but with more data points, the model gradually loses its control. On the contrast, the generalization error will decrease because with few data points the model can't tell too much about the true curve. However, the generalization error and training error will get closer to each other and the bias plus noise will always be there.  </p>
-<h1>Depth on sources of error</h1>
-<p>Alright, math time now. Let's take a closer look at the error of our model.  </p>
-<div class="math">$$Error=\sigma^2 +[bias(f_{\hat{w}})]^2+var(f_{\hat{w}})$$</div>
-<p>We check the expected prediction error on a specific data points \( x_{t}\). It is described as:  </p>
-<div class="math">$$L(y, f_{\hat{w}}(x))=(y-f_{\hat{w}}(x_t))^2$$</div>
-<p>So the expected prediction error at \( x_t\) is:  </p>
-<div class="math">$$E_{train}[(y-f_{\hat{w}}(x_t))^2]$$</div>
-<p>Here we will use a commonly used derivation trick called "add zero". The above error can be written as:  </p>
-<div class="math">$$E_{train}[((y_t-f_{w(true)}(x_t))+(f_{w(true)}(x_t)-f_{\hat{w}(train)}(x_t)))^2]$$</div>
-<div class="math">$$=E[(y-f)^2]+2E[(y-f)(f-\hat{f})+E[(f-\hat{f})^2]]$$</div>
-<div class="math">$$=\sigma^2+2E[y-f]E[f-\hat{f}]+MSE(\hat{f})$$</div>
-<p>In particular, \( E[y-f]=E[\epsilon]=0\), so finally we have:  </p>
-<div class="math">$$E_{train}[(y-f_\hat{w}(x_t))^2]=\sigma^2 + MSE(\hat{f})$$</div>
-<p>And  </p>
-<div class="math">$$MSE[f_{\hat{w}(true)}(x_t)]=E_{train}[(f-\hat{f})^2]$$</div>
-<p>We use the same "add zero" trick to simplify the MSE:</p>
-<div class="math">$$E_{train}[(f-\hat{f})^2]=E_{train}[((f-\bar{f})+(\bar{f}-f))^2]$$</div>
-<div class="math">$$=E_{train}[(f-\bar{f})^2]+2E_{train}[(f-\bar{f})(\bar{f}-\hat{f})]+E_{train}[(\hat{f}-\bar{f})^2]$$</div>
-<div class="math">$$=(f-\bar{f})^2+2(f-\bar{f})E[\bar{f}-\hat{f}]+E_{train}[(\hat{f}-\bar{f})^2]$$</div>
-<p>Note that \(f-\bar{f}=bias \), \( \bar{f}-E[\hat{f}]=0\) and also we have \(E_{train}[(\hat{f}-\bar{f})^2]=var(\hat{f}) \) and replace the corresponding term.  </p>
-<p>So, what we have now? Surprise~~It is:  </p>
-<div class="math">$$Error=\sigma^2+bias^2(\hat{f})+var(\hat{f})$$</div>
-<p>That is where three sources error come from~  </p>
-<h1>Model selection</h1>
-<p>For model selection we need to choose tuning paramters \( \lambda\) to control model complexity(e.g. degree of polynomial). So usually we divide data into train data, validation data, test data. We will never touch test data until we finalize our model. We select \( \lambda^*\) to minimize error on validation set. Then we approximate generalization error by test error. Typical splits follows the percentage like: 80%, 10%,10% or 50%,25%,25% for training, validation, testing set separately.  </p>
+</footer><!-- /.post-info --><h1>Tuning Parameter</h1>
+<p>We know that complext models have low bias but high variance, simple models have high bias but low variance. Also we know error consist of bias and variance plus noise. A trade off between bias and variance is what we need. Also we gave the formal definition of overfitting. Usually the symptom of overfitting is \( ||w||\) becomes very large. Think about it, there are a lot of elements in \( \vec{w}\) or each element is very large(it means the model is very sensitive to train data, any change in train data will cause a large change on model). On the other hand, how does number of observations influence overfitting? For few observations, as model complexity increases, the model overfits rapidly. For many obvervations, as model complexity increases, the model overfits slowly.  </p>
+<p>So in addtion to the difference between real-value and predicted value, we add the magnitude of coefficients to our measure loss. So we now have:  </p>
+<div class="math">$$Cost = fitness + magnitude$$</div>
+<p>The first term is our old friend:RSS. The second term is so called regularizer which is used to control the model complexity. Speaking of magnitude of coefficients, which one should we use? norm 1 or norm 2? In ridge regression we use norm 2. Norm 1 is LASSO which we will talk later. So for ridge regression we have:  </p>
+<div class="math">$$Cost = RSS(\vec{w})+\lambda||w||_{2}^2$$</div>
+<p>"Call 911, our target tuning parameter lambda occurs" "Roger that~" Let's take a closer look at this lambda.  </p>
+<ul>
+<li>
+<p>if \( \lambda=0\), the cost reduces to RSS as before. Suppose the solution is marked as \( \hat{w}^{LS}\) where super script \( LS\) means least square.  </p>
+</li>
+<li>
+<p>if \(\lambda=\infty\), for solution where \(\hat{w}\ne 0\), the total cost is \(\infty \). So \(\hat{w}\) has to be 0, then the total cost is \(RSS(0)\).  </p>
+</li>
+<li>
+<p>if \(\lambda\) is in between, then 0\(\le ||\hat{w}||_2^2 \le ||\hat{w}^{LS}||_2^2\)</p>
+</li>
+</ul>
+<h1>Bias-Variance Tradeoff</h1>
+<p>A natural quesiton is how to choose \( \lambda\). We take two steps to see what influence this tuning parameter \( \lambda\) has.   </p>
+<p>First we check what happens to the feature coefficients \(\hat{w}^{LS}\). Thanks to my teacher we have a clear graph here to see. Note that this graph is built on the house_price of King County area of Seattle. The features of corresponding coefficients are square_living, number of bedrooms, etc. So different color of curve represents the coefficient of its feature. The horizontal axis means the \( \lambda\).  </p>
+<p><img alt="im20" src="/images/im20.png" />  </p>
+<p>As \(\lambda \) becomes larger, the magnitude of \( \hat{w}\) becomes smaller and smaller. If \( \lambda\) becomes infinity, the magnitude will shrink to 0.  </p>
+<p>Second, we check what happens to the fit curve. Still the same data set, and we divide it into four sets. We compare the model fit curve with and without tunning parameter.  </p>
+<p><img alt="overfitting1" src="/images/overfitting1.png" />
+<img alt="ridge1" src="/images/ridge1.png" />  </p>
+<p><img alt="overfitting2" src="/images/overfitting2.png" />
+<img alt="ridge2" src="/images/ridge2.png" />  </p>
+<p><img alt="overfitting3" src="/images/overfitting3.png" />
+<img alt="ridge3" src="/images/ridge3.png" />  </p>
+<p><img alt="overfitting4" src="/images/overfitting4.png" />
+<img alt="ridge4" src="/images/ridge4.png" />  </p>
+<p>We train a 15th order of polynomial model on the four sets of data. The images of left column show the model without tuning paramter. They are very good examples of overfitting. The images of right column show model fit with \( 10^5\). The curve becomes simple and well-behaved. Instead if we take a look at simple model like the following figure.  </p>
+<p><img alt="im21" src="/images/im21.png" />  </p>
+<p>The blue line is the original model and the red line is model with tuning parameter. It is obvious that the tuning parameter tries to tame the original curve, make it more conservative.  </p>
+<p>Finally we check the influence tuning parameter has on the error.  </p>
+<p><img alt="im22" src="/images/im22.png" />  </p>
+<p>It looks like an "U". So the bottom of the "U" is our sweet point. In practical, we first fix proper range of \(\lambda \) by tuning it in logarithmic step, then search the sweet point in the proper range.  </p>
+<h1>Get Maximum/Minimum</h1>
+<p>Since we have added a tuning parameter into our cost function. How to get the maximum/minimum? Still, the gradient descent works here. Remember gradient descent and its variants are powerful methods in convex optimization problems.  </p>
+<p>We start from the cost function in matrix form.  </p>
+<div class="math">$$RSS(\vec{w})=(\vec{y}-Hw)^{T}(y-Hw)$$</div>
+<div class="math">$$||w||_{2}^2=\vec{w}^{T}\vec{w}$$</div>
+<p>So the total cost will be:  </p>
+<div class="math">$$(\vec{y}-Hw)^{T}(y-Hw)+\lambda\vec{w}^{T}\vec{w}$$</div>
+<p>We take the gradient and get:  </p>
+<div class="math">$$-2H^{T}(\vec{y}-\vec{H}w)+2\lambda w$$</div>
+<p>Set the gradient = 0:  </p>
+<div class="math">$$\triangledown cost(w) = -2H^{T}(\vec{y}-\vec{H}w)+2\lambda I w = 0$$</div>
+<p>Solve it and get:  </p>
+<div class="math">$$\hat{w}^{ridge}=(H^{T}\vec{H}+\lambda I)^{-1}H^{T}\vec{y}$$</div>
+<p>If \( \lambda=0\),then \( \hat{w}^{ridge}=(H^{T}H)^{-1}H^{T}y=\hat{w}^{LS}\)  </p>
+<p>if \( \lambda=\infty\), then \( \hat{w}^{ridge}=0\). It's like divded by \(\infty\)  </p>
+<p>Note that the term \(\lambda I\) in \( \hat{w}^{ridge}\) will always make \((H^{T}\vec{H}+\lambda I) \) invertible if \( \lambda &gt; 0\) even if \( N&lt;D\) where \(N\) is the numebr of data points and \( D\) is how many features we consider. Unfortunately the complexity of inverse is \( O(D^3)\). So we turn to gradient descent.  </p>
+<p>Take a look at the jth feature weight:  </p>
+<div class="math">$$w_{j}^{(t+1)}\leftarrow w_{j}^{(t)}-\eta[-2\sum_{i=1}^{N}h_{j}(x_{i})(y_i-\hat{y_i}(w^{t}))+2\lambda w_{j}^{(t)}]$$</div>
+<p>That is:  </p>
+<div class="math">$$w_{j}^{(t+1)}\leftarrow (1-2\eta \lambda)w_{j}^{(t)}+2\eta h_{j}(x_{i})(y_i-\hat{y_i}(w^{t}))$$</div>
+<p>Note that the second term of the right side is the same as the term we use to update the original RSS. The difference is the \( -2\eta \lambda \). It tells that on the basis of the original update, we minus a term, so the effect is like shrinking the result. The process help us avoid that w becomse too large. So the track will be like vibration before we reach the destination.  </p>
+<h1>Practical Issues</h1>
+<h4>Cross-validation</h4>
+<p>We have said validation is used to choose \( \lambda\). If our data amount is not enough, cross-validation comes to our mind. We divide randomly train data into \( K\) folders, pick out \( K-1\) set to train our model and use the last group to validate. Iterate this process on every folder of data. So at last we will have \( K \) errors. And for this specific \(\lambda \) we can have :  </p>
+<div class="math">$$CV(\lambda)=\frac{1}{K}\sum_{k=1}^{K}error_{k}(\lambda)$$</div>
+<p>So the task is to find \(\lambda^*\) to minimize the \( CV(K)\). How many folders should we use? If \(K=N \), it is leave-one-out cross validtion. Typically, let K=5 or 10. </p>
+<h4>Handle the intercept</h4>
+<p>Given a vector of coefficients, \( \lambda\) penalize the constant feature, making \( w_0\) small. It is not necessary. So we have two options. First one is leave the intercept alone. The modified gradient descent is:  </p>
+<hr />
+<p>while \( ||\triangledown RSS(w^{(t)})||&gt;\epsilon\):<br />
+&ensp;&ensp;&ensp;&ensp;for j=0,...D:<br />
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;partial[j] = \(-2\sum_{i=1}^{N}h_j(x_i)(y_i-\hat{y_i}(w^{(t)})) \)  </p>
+<p>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;if j = 0:<br />
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;\( w_0^{(t+1)}\leftarrow w_0^{t}-\eta *partial[j]\)<br />
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;else:  </p>
+<p>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp; \( w_0^{(t+1)}\leftarrow (1-2\eta \lambda)w_0^{(t)}- \eta *partial[j] \)<br />
+\( t\leftarrow t+1\)  </p>
+<hr />
+<p>Another option is center the data first. It means transform y to have 0 mean.Then run nomal ridge regression on the normalized y.  </p>
 <h1>Summary</h1>
-<p>So far, we have talked about simple regression, multiple regression and model assessment. Actually we can do a lot of fun stuff using these basic tools now. Since we have introduce some tuning parameters, next we will continue to talk more about tuning parameters and will cover ridge regression, LASSO, and kernel regression. Stay tune~</p>
+<p>In this article we talked start from the tradeoff between bias and variance. To achieve the balance we introduce tuning parameter \( \lambda\) to control the model complexity. It shrinks the feature coefficients when gradient descent is carried out. Note that the cost function now is the sum of RSS and magnitude of the coefficients. For ridge regression the magnitude is calculated by norm 2. Next we will talk about using norm 1. It will be the "least absolute shrinkage and selection operator", LASSO for short.</p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -160,6 +170,21 @@
                 <section id="content" class="body">
                     <h1>Other articles</h1>
                     <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/regression_3_simple_regression.html" rel="bookmark"
+                           title="Permalink to Regression_3_Simple_Regression">Regression_3_Simple_Regression</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Tue 05 April 2016</span>
+<span>| tags: <a href="/tag/regression.html">regression</a></span>
+</footer><!-- /.post-info -->                <p>We have generic models and algorithms to solve them. But we always have to worry about how much i am losing. If our model prediction is too low, then we only get low offers; if model prediction is too high, we get few looks and no offers. So this article will presents how to assess our models.</p>
+                <a class="readmore" href="/regression_3_simple_regression.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
