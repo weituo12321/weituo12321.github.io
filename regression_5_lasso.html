@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
         <meta charset="utf-8" />
-        <title>HardCoreAI - Machine_Learning</title>
+        <title>Regression_5_LASSO</title>
         <link rel="stylesheet" href="/theme/css/main.css" />
 
         <!--[if IE]>
@@ -23,14 +23,19 @@
                 </ul>
                 </nav>
         </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/regression_5_lasso.html" rel="bookmark"
+           title="Permalink to Regression_5_LASSO">Regression_5_LASSO</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="/regression_5_lasso.html">Regression_5_LASSO</a></h1>
+    <div class="entry-content">
 <footer class="post-info">
         <span>Fri 15 April 2016</span>
 <span>| tags: <a href="/tag/regression.html">regression</a></span>
-</footer><!-- /.post-info --><h1>Feature Selection</h1>
+</footer><!-- /.post-info -->      <h1>Feature Selection</h1>
 <p>Why do we need feature selection? The first consideration is for computational efficiency. Too many features will cost too much computing resources. If we select out the features then the coefficients vector will be sparse so some calculations are only associated with the non-zero values. The second consideration is interpretability. We want to focus on the features related to our final target. The question is how to select the features.  </p>
 <h4>Option 1: Subsets Selection</h4>
 <p>Suppose we have 8 features in total to evaluate the price of the house. We start from one-feature model(it means only one feature is used in these models) and evaluate the RSS(residual sum of square) of each model. Then we evaluate all the two-feature models(it means two features are used in these models). Keep doing so until all 8 features are used. Note that in this brute force subset selection, best model of size k need not contain features of best model of size k-1. It means the feature subsets are not necessarily nested. If we draw the RSS versus the number of features we get the following figure.  </p>
@@ -211,91 +216,11 @@ We know LASSO can select feature and it prefers models with more bias and less v
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-</script>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <ol id="posts-list" class="hfeed">
+</script>
+    </div><!-- /.entry-content -->
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/regression_4_ridge_regression.html" rel="bookmark"
-                           title="Permalink to Regression_4_Ridge_Regression">Regression_4_Ridge_Regression</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Fri 08 April 2016</span>
-<span>| tags: <a href="/tag/regression.html">regression</a></span>
-</footer><!-- /.post-info -->                <p>Previously we have talked about simple regression and for a machine learning model we want to get a tradeoff between bias and variance. Now we introduce one tuning parameter and check how ridge regression works.</p>
-                <a class="readmore" href="/regression_4_ridge_regression.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/regression_3_simple_regression.html" rel="bookmark"
-                           title="Permalink to Regression_3_Simple_Regression">Regression_3_Simple_Regression</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Tue 05 April 2016</span>
-<span>| tags: <a href="/tag/regression.html">regression</a></span>
-</footer><!-- /.post-info -->                <p>We have generic models and algorithms to solve them. But we always have to worry about how much i am losing. If our model prediction is too low, then we only get low offers; if model prediction is too high, we get few looks and no offers. So this article will presents how to assess our models.</p>
-                <a class="readmore" href="/regression_3_simple_regression.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/regression_2_multiple_regression.html" rel="bookmark"
-                           title="Permalink to Regression_2_Multiple_Regression">Regression_2_Multiple_Regression</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sat 02 April 2016</span>
-<span>| tags: <a href="/tag/regression.html">regression</a></span>
-</footer><!-- /.post-info -->                <p>What is regression? In this article, i start from simple examples and extract out the basic model for regression problems. Then i will continue to talk about practical issues when we use the model to solve real problems.</p>
-                <a class="readmore" href="/regression_2_multiple_regression.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/regression_1_simple_regression.html" rel="bookmark"
-                           title="Permalink to Regression_1_Simple_Regression">Regression_1_Simple_Regression</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Mon 21 March 2016</span>
-<span>| tags: <a href="/tag/regression.html">regression</a></span>
-</footer><!-- /.post-info -->                <p>What is regression? In this article, i start from simple examples and extract out the basic model for regression problems. Then i will continue to talk about practical issues when we use the model to solve real problems.</p>
-                <a class="readmore" href="/regression_1_simple_regression.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/re.html" rel="bookmark"
-                           title="Permalink to First-Blog">First-Blog</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sat 19 March 2016</span>
-<span>| tags: <a href="/tag/pelican.html">pelican</a><a href="/tag/publishing.html">publishing</a></span>
-</footer><!-- /.post-info -->                <p>Try some format</p>
-                <a class="readmore" href="/re.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-            </ol><!-- /#posts-list -->
-<p class="paginator">
-    Page 1 / 1
-</p>
-            </section><!-- /#content -->
+  </article>
+</section>
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>blogroll</h2>

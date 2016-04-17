@@ -26,89 +26,135 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="/regression_4_ridge_regression.html">Regression_4_Ridge_Regression</a></h1>
+                    <h1 class="entry-title"><a href="/regression_5_lasso.html">Regression_5_LASSO</a></h1>
 <footer class="post-info">
-        <span>Fri 08 April 2016</span>
+        <span>Fri 15 April 2016</span>
 <span>| tags: <a href="/tag/regression.html">regression</a></span>
-</footer><!-- /.post-info --><h1>Tuning Parameter</h1>
-<p>We know that complext models have low bias but high variance, simple models have high bias but low variance. Also we know error consist of bias and variance plus noise. A trade off between bias and variance is what we need. Also we gave the formal definition of overfitting. Usually the symptom of overfitting is \( ||w||\) becomes very large. Think about it, there are a lot of elements in \( \vec{w}\) or each element is very large(it means the model is very sensitive to train data, any change in train data will cause a large change on model). On the other hand, how does number of observations influence overfitting? For few observations, as model complexity increases, the model overfits rapidly. For many obvervations, as model complexity increases, the model overfits slowly.  </p>
-<p>So in addtion to the difference between real-value and predicted value, we add the magnitude of coefficients to our measure loss. So we now have:  </p>
-<div class="math">$$Cost = fitness + magnitude$$</div>
-<p>The first term is our old friend:RSS. The second term is so called regularizer which is used to control the model complexity. Speaking of magnitude of coefficients, which one should we use? norm 1 or norm 2? In ridge regression we use norm 2. Norm 1 is LASSO which we will talk later. So for ridge regression we have:  </p>
-<div class="math">$$Cost = RSS(\vec{w})+\lambda||w||_{2}^2$$</div>
-<p>"Call 911, our target tuning parameter lambda occurs" "Roger that~" Let's take a closer look at this lambda.  </p>
+</footer><!-- /.post-info --><h1>Feature Selection</h1>
+<p>Why do we need feature selection? The first consideration is for computational efficiency. Too many features will cost too much computing resources. If we select out the features then the coefficients vector will be sparse so some calculations are only associated with the non-zero values. The second consideration is interpretability. We want to focus on the features related to our final target. The question is how to select the features.  </p>
+<h4>Option 1: Subsets Selection</h4>
+<p>Suppose we have 8 features in total to evaluate the price of the house. We start from one-feature model(it means only one feature is used in these models) and evaluate the RSS(residual sum of square) of each model. Then we evaluate all the two-feature models(it means two features are used in these models). Keep doing so until all 8 features are used. Note that in this brute force subset selection, best model of size k need not contain features of best model of size k-1. It means the feature subsets are not necessarily nested. If we draw the RSS versus the number of features we get the following figure.  </p>
+<p><img alt="im23" src="/images/im23.png" />  </p>
+<p>Option 1 is obviously not efficient for feature selection. If we have D features in total, then the complexity of "all subsets" will be \( 2^{D+1}\). It is typically computational infeasible.  </p>
+<h4>Option 2: Greedy Algorithm</h4>
+<p>Similar to the first option, but keep features of model of size k-1 when we begin to choose the kth feature. Note that training error never increases and solutions eventually meet to the "all sets" solution. When should we stop? When the training error is low enough? NO! We know that low training error doesn't mean anything. When the test error is low enough? NO! Do not touch test data! For this question we still turn to validation or cross validation for help. How many models are evaluated? Well, in the first step, we evaluate D models. If one feature add for each step, then in the second step, D-1 models will be evaluated. As the process goes on, we will end up with all feature model. So the complexity will be \( O(D^2)\) which is much much less than \( 2^D\). Also, other greedy algorithms like backforwards(starts from whole set and reduce features each step) or combination of backwards and forwards.  </p>
+<h4>Option 3: Regularize</h4>
+<p>Finally we come to our main hero in this article. Let's recap ridge regression a little bit here. Remember the total cost consists of measure of fit and measure of magnitude of coefficients. We use \( \lambda\) to adjust the measure of magnitude. In this way we can achieve a tradoff between bias and variance. Particularly, the ridge regression uses norm 2 as the magnitude of coefficients. Note that this way will shrink the \( ||w||\) to a very small value but can't force it to 0. Recall our goal of feature selection is to get rid of unnecessary features. It indicates the corresponding coefficients will be 0. Instead of searching over a discrete set of solutions, can we start from the whole set of features and use regularization to force some coefficients to 0? The answer is YES.  </p>
+<p>Someone may propose that for a tradeoff between bias and variance, why not thresholding coefficients in the ridge regression? For example, we set a threshold 5. In the vector of coefficients \( \vec{w}\), if the \( w_{j}\) is larger than 5, we keep it. Else we set it as 0. There is a problem doing so. For example, we look at two related features: <em># bathrooms</em> and <em># showers</em>. These two are highly related even equal to each other. For this case, ridge regression tends to make both coefficients very small so that these two features will be ignored in the thresholding. In fact, if we eliminate <em># showers</em>, the influence of the coefficient of <em># showers</em> will be transferred to <em># bathrooms</em> which means the coefficient of <em># bathrooms</em> may become larger than the threshold so that it will be kept. So the point here is: if the features are strongly correlated, ridge regression prefer a model that assign small coefficients to each redundant feature rather than get rid of redundant coefficients.  </p>
+<p>To achieve the effect of feature selection, we use \(l_1\) norm for the measure of magnitude. Still \(\lambda \) is used to tune the norm. If \( \lambda = 0\), then \(\hat{w}^{lasso}=\hat{w}^{LS} \). If \( \lambda=\infty\), then \( \hat{w}^{lasso}=0\). If \( \lambda\) is in between, then \(0 \le ||\hat{w}^{lasso}|| \le ||\hat{w}^{LS}||\).  </p>
+<p>We can compare the coefficient path of ridge regression and lasso.   </p>
+<p><img alt="im24" src="/images/im24.png" />
+<img alt="im25" src="/images/im25.png" />  </p>
+<p>It can be seen that the coefficients in lasso prefer to touch the axis first and the whole figure looks like many taut ropes.  </p>
+<p>On the other hand we can also compare the ridge cost and lasso cost in 2D plane. Note that 2D means we have two coefficients \( \vec{w}=(w_0, w_1)\). And the total cost is:  </p>
+<div class="math">$$RSS(\hat{w})+\lambda||w||_2^{2}=\sum_{i=1}^{N}(y_i-w_0h_0(x_i)-w_1h_1(x_i))^2+\lambda(w_0^2+w_1^2)$$</div>
+<p>If we look at the first part of the right side of the above equation, it is a ellipse. The second part is a circle whose center is the origin and radius is \( \frac{1}{\lambda}\). When \( \lambda \rightarrow 0\), the radius \(\rightarrow  \infty\), then the optimal solution will be \(\hat{w}^{LS} \). if \(\lambda \rightarrow \infty \), the radius \( \rightarrow 0\), then the optimal solution will be \( \vec{0}\). If \( \lambda\) in between, the solution will be between 0~\(\hat{w}^{LS}\). During \(\lambda \) changes from 0 to \(\infty \), the solution will leave \(\hat{w}^{LS} \) and shrink to the origin along a smooth curve. The contour plot will be as follows:  </p>
+<p><img alt="im26" src="/images/im26.png" />  </p>
+<p>How about lasso? Still the total cost funtion will be written as follows:  </p>
+<div class="math">$$Rss(w)+\lambda||w||_1=\sum_{i=1}^{N}(y_i-w_0h_0(x_i)-w_1h_1(x_i))^2+\lambda(|w_0|+|w_1|)$$</div>
+<p>The first term of the right side of equation does not change. Its contour plot in 2D plane is still a ellipse. The second term defines a "diamond" in the 2D plane. We will see that as \( \lambda \) ranges from 0 to \( \infty \), the solution will first hit the \( w_1 \) axis, then down to origin. It means the contour will first touch the corners of \( l_1 \) penalty. The track looks like the following graph.  </p>
+<p><img alt="im27" src="/images/im27.png" />  </p>
+<p>So if we refit the high-order polynomial model using \( l_1 \) penalty, as the penalty (\( \lambda \))gets larger, the \( \vec{w} \) becomes sparser.  </p>
+<h1>Optimize Lasso</h1>
+<p>Since we have seen the effect of lasso, a natural question is how to optimize the total cost. In particular, what's the derivative of \( |w_j|\)? It is easy to find out that when \( w_j \) is positive and negative, the corresponding derivative is 1 and -1. Unfortunately, there exists no derivative when \( w_j =0\). Before we start optimizing the total cost we introduce some aside knowledge here.  </p>
+<h4>Aside 1: Coordinate Descent</h4>
+<p>The goal is to minimize some function \( g(\vec{w}) = g(w_0, w_1,...,w_D) \). So it looks like:  </p>
+<hr />
+<p>Initialize \(\hat{w}=0\)<br />
+while not converged:<br />
+&ensp;&ensp;&ensp;&ensp;pick a coordinate j:  <br />
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
+\( w_j \leftarrow min_{w_j} g(\vec{w}) \)  </p>
+<hr />
+<p>Note that except for \( w_j\) all the values of \( \vec{w}\) are values of previous iteration. It looks like the expectation maximization process. We first pursue the optimal value of one coeeficient, then change direction and continue to do that. Note that in this process we do not need to choose the step size. This method is very useful for many problems among which is the lasso optimization. It converges for lasso objective.  </p>
+<h4>Aside 2: Normalizing Features</h4>
+<p>Different features have different range of values. For example, the size of the house may be 600 square feet, the number of bathrooms may be 3. The goal of normalizing features is to scale the training columns and make each value of features into same range. It can be described as follows:  </p>
+<div class="math">$$\bar{h_j(x_k)}=\frac{h_j(x_k)}{\sqrt{\sum_{i=1}^{N}h_j(x_i)^2}}$$</div>
+<p>Remember that \( \sqrt{\sum_{i=1}^{N}h_j(x_i)^2} \) is the scale factors. Apply the same scale factor to the test data!! Don't forget that. Do not recalculate the normalizer using test data!!  </p>
+<h4>Aside 3: Coordinate descent for unregularized regression</h4>
+<p>We first take a look at how coordinate descent works in simple regression we have discussed before. Note that normalized features are used here.  </p>
+<div class="math">$$Rss(\vec{w})=\sum_{i=1}^{N}(y_i-\sum_{j=0}^{D}w_j\bar{h_j(x_i)})^2$$</div>
+<p>Take the partial derivative with respect to \( w_j\). It means we fix all the coordinates except for \( w_j \):  </p>
+<div class="math">$$\frac{\partial}{\partial{w_j}}Rss(w)=-2\sum_{i=1}^{N}\bar{h_j(x_i)}(y_i-\sum_{k\ne j}w_k\bar{h_k}(x_i)-w_j\bar{h_j(x_i)})$$</div>
+<div class="math">$$=-2\sum_{i=1}^{N}\bar{h_j(x_i)}(y_i-\sum_{k\ne j}w_k\bar{h_k}(x_i))+2w_j\sum_{i=1}^{N}\bar{h_j(x_i)}^2$$</div>
+<div class="math">$$=-2\sum_{i=1}^{N}\bar{h_j(x_i)}(y_i-\sum_{k\ne j}w_k\bar{h_k}(x_i))+2w_j$$</div>
+<p>Suppose<br />
+</p>
+<div class="math">$$\rho_j=\sum_{i=1}^{N}\bar{h_j(x_i)}(y_i-\sum_{k\ne j}w_k\bar{h_k}(x_i))$$</div>
+<p>Then we have<br />
+</p>
+<div class="math">$$\frac{\partial}{\partial{w_j}}Rss(w)=-2\rho_j+2w_j$$</div>
+<p>Let the derivative to be 0 we have \(\hat{w_j}=\rho_j \). So the whole algorithm can be described as follows:  </p>
+<hr />
+<p>Initialize \(\hat{w}=0\)<br />
+while not converged:<br />
+&ensp;&ensp;&ensp;&ensp;for j = 0,1,...D:<br />
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;compute</p>
+<div class="math">$$\rho_j=\sum_{i=1}^{N}\bar{h_j(x_i)}(y_i-\sum_{k\ne j}w_k\bar{h_k}(x_i))$$</div>
+<p>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;if in LS:<br />
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp; set \( \hat{w}_j = \rho_j \)<br />
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;if in LASSO:<br />
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
+set \( \hat{w}_j =\) \( </p>
+<div class="math">\begin{array}{c} \rho_j + \frac{\lambda}{2} if \rho_j&lt;-\frac{\lambda}{2}  \\ 0 \\ \rho_j - \frac{\lambda}{2} if \rho_j&gt;\frac{\lambda}{2}  \end{array}</div>
+<p> \)  </p>
+<hr />
+<p>For the LASSO result we call it soft thresholding and it can be described as following picture:  </p>
+<p><img alt="im28" src="/images/im28.png" />  </p>
+<p>We can see that the dotted line is the ridge regression. It does shrink the coeficients but never forces them to 0. The broken line is for LASSO. It shrinks the coefficients and for the middle range it forces the coefficients to 0.  </p>
+<p>Another practical problem is when to stop the iteration. For convex problems, the process will take smaller and smaller steps. Here steps means the difference between \( w_j^{(t)} \)and \(w_j^{(t+1)} \). So measure the size of steps taken in a full loop over all features. If the max step &lt; \(\epsilon\), then we stop.  </p>
+<p>Check some other ideas on the LASSO solver:<br />
+Parallel stochastic gradient descent<br />
+Alternating directions method of multipliers(ADMM)  </p>
+<p>So we formalize the coordinate descent algorithm for lass with unformalized features as follows:  </p>
+<hr />
+<p>Precompute: \(z_j = \sum_{i=1}^{N}h_j(x_i)^2 \)<br />
+Initialize \( \hat{w} = 0 \)  </p>
+<p>while not converged:<br />
+&ensp;&ensp;&ensp;&ensp;for j = 0,1,...,D:<br />
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;compute 
+\( \rho_j = \sum_{i=1}^{N}h_j(x_i)(y_i- \hat{y}_i (\hat{w}^{-j})) \) (-j means except for j)  </p>
+<p>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;set  </p>
+<div class="math">$$\hat{w}_j =\{ \begin{array}{c} \frac{\rho_j + \frac{\lambda}{2}}{z_j} if \rho_j&lt;-\frac{\lambda}{2}  \\ 0 \\ \frac{\rho_j - \frac{\lambda}{2}}{z_j} if \rho_j&gt;\frac{\lambda}{2}  \end{array}$$</div>
+<hr />
+<h1>One More Thing</h1>
+<p>It is not surprising that my dear readers keep asking how to get the result of \( \hat{w}_j \) in the LASSO case. We write the total cost here:  </p>
+<div class="math">$$Rss(\vec{w})+\lambda||w||_1=\sum_{i=1}^{N}(y_i-\sum_{j=0}^{D}w_jh_j(x_i))^2+\lambda\sum_{j=0}^{D}|w_j|$$</div>
+<p>From previous content we know the derivative w.r.t \(w_j\) of the first term is:  </p>
+<div class="math">$$-2\rho_j+2w_jz_j$$</div>
+<p>where \( z_j\) is the precompute term \( \sum_{i=1}^{N}h_j(x_i)^2 \)  </p>
+<p>But how about \( \lambda \frac{\partial}{\partial{w_j}}=??\)  </p>
+<h4>Aside 1: gradients lower bound convex functions</h4>
+<p>For a given convec function \(g \), we have:  </p>
+<div class="math">$$g(b)\ge g(a) + \triangledown g(a)(b-a)$$</div>
+<p>The derivative function \( \triangledown g(a)\) is unique if \(g\) is differentiable at a. What if point a is not differentiable? We need subgradients. Subgradient is any plane that lower bounds the original function. Suppose \( V\in \partial g(x)\), and it satisfy the condition  \(g(b)\ge g(a) +V(b-a) \). Then we say \( V\) is the subgradient of \( g\) at x.  </p>
+<p>So for \( |x| \) we can draw so many planes that lower bounds the function if \( V\) ranges from [-1, 1].It looks like the followign figure:  </p>
+<p><img alt="im29" src="/images/im29.png" />  </p>
+<p>For the case in LASSO, we have:  </p>
+<div class="math">$$\lambda\partial_{sub,w_j}|w_j|= \begin{array}{c} -\lambda,if w_j&lt;0 \\ [-\lambda, \lambda], ifw_j=0 \\ \lambda, when w_j &gt; 0  \end{array}  $$</div>
+<p>So when we set gradient=0 we need to consider three cases.  </p>
+<p>case 1: \( w_j &lt; 0 \Rightarrow \rho_j &lt; -\frac{\lambda}{2}\)<br />
+\(2z_j\hat{w}_j - 2\rho_j - \lambda=0 \Rightarrow \hat{w}_j = \frac{\rho_j+\lambda/2}{z_j}\)  </p>
+<p>case 2: \( w_j=0 \Rightarrow 0 \in[-2\rho_j - \lambda, -2\rho_j + \lambda]\)<br />
+\( -\frac{\lambda}{2} \le \rho_j \le \frac{\lambda}{2} \)  </p>
+<p>case 3: \( w_j &gt; 0 \Rightarrow \rho_j &gt; \frac{\lambda}{2}\)<br />
+\(2z_j\hat{w}_j - 2\rho_j + \lambda=0 \Rightarrow \hat{w}_j = \frac{\rho_j-\lambda/2}{z_j}\)  </p>
+<p>So combining those three cases we have the final result as listed above and the soft thresholding. Math is so interesting right?  </p>
+<h4>Other practical issues</h4>
+<p>1 How to choose \(\lambda \) ?<br />
+We still use cross validation here, but it ends up choosing less sparse solutions. Thus what we get is a smaller \( \lambda\) than the optimal one for feature selection. Details can be seen from book <em>"Machine Learning: A probablistic perspective"</em>.  </p>
+<p>2 Debiasing LASSO<br />
+We know LASSO can select feature and it prefers models with more bias and less variance. To reduce bias we can do as follows:  </p>
 <ul>
-<li>
-<p>if \( \lambda=0\), the cost reduces to RSS as before. Suppose the solution is marked as \( \hat{w}^{LS}\) where super script \( LS\) means least square.  </p>
-</li>
-<li>
-<p>if \(\lambda=\infty\), for solution where \(\hat{w}\ne 0\), the total cost is \(\infty \). So \(\hat{w}\) has to be 0, then the total cost is \(RSS(0)\).  </p>
-</li>
-<li>
-<p>if \(\lambda\) is in between, then 0\(\le ||\hat{w}||_2^2 \le ||\hat{w}^{LS}||_2^2\)</p>
-</li>
+<li>run lasso to select features  </li>
+<li>run least squeares regression with only selected features  </li>
 </ul>
-<h1>Bias-Variance Tradeoff</h1>
-<p>A natural quesiton is how to choose \( \lambda\). We take two steps to see what influence this tuning parameter \( \lambda\) has.   </p>
-<p>First we check what happens to the feature coefficients \(\hat{w}^{LS}\). Thanks to my teacher we have a clear graph here to see. Note that this graph is built on the house_price of King County area of Seattle. The features of corresponding coefficients are square_living, number of bedrooms, etc. So different color of curve represents the coefficient of its feature. The horizontal axis means the \( \lambda\).  </p>
-<p><img alt="im20" src="/images/im20.png" />  </p>
-<p>As \(\lambda \) becomes larger, the magnitude of \( \hat{w}\) becomes smaller and smaller. If \( \lambda\) becomes infinity, the magnitude will shrink to 0.  </p>
-<p>Second, we check what happens to the fit curve. Still the same data set, and we divide it into four sets. We compare the model fit curve with and without tunning parameter.  </p>
-<p><img alt="overfitting1" src="/images/overfitting1.png" />
-<img alt="ridge1" src="/images/ridge1.png" />  </p>
-<p><img alt="overfitting2" src="/images/overfitting2.png" />
-<img alt="ridge2" src="/images/ridge2.png" />  </p>
-<p><img alt="overfitting3" src="/images/overfitting3.png" />
-<img alt="ridge3" src="/images/ridge3.png" />  </p>
-<p><img alt="overfitting4" src="/images/overfitting4.png" />
-<img alt="ridge4" src="/images/ridge4.png" />  </p>
-<p>We train a 15th order of polynomial model on the four sets of data. The images of left column show the model without tuning paramter. They are very good examples of overfitting. The images of right column show model fit with \( 10^5\). The curve becomes simple and well-behaved. Instead if we take a look at simple model like the following figure.  </p>
-<p><img alt="im21" src="/images/im21.png" />  </p>
-<p>The blue line is the original model and the red line is model with tuning parameter. It is obvious that the tuning parameter tries to tame the original curve, make it more conservative.  </p>
-<p>Finally we check the influence tuning parameter has on the error.  </p>
-<p><img alt="im22" src="/images/im22.png" />  </p>
-<p>It looks like an "U". So the bottom of the "U" is our sweet point. In practical, we first fix proper range of \(\lambda \) by tuning it in logarithmic step, then search the sweet point in the proper range.  </p>
-<h1>Get Maximum/Minimum</h1>
-<p>Since we have added a tuning parameter into our cost function. How to get the maximum/minimum? Still, the gradient descent works here. Remember gradient descent and its variants are powerful methods in convex optimization problems.  </p>
-<p>We start from the cost function in matrix form.  </p>
-<div class="math">$$RSS(\vec{w})=(\vec{y}-Hw)^{T}(y-Hw)$$</div>
-<div class="math">$$||w||_{2}^2=\vec{w}^{T}\vec{w}$$</div>
-<p>So the total cost will be:  </p>
-<div class="math">$$(\vec{y}-Hw)^{T}(y-Hw)+\lambda\vec{w}^{T}\vec{w}$$</div>
-<p>We take the gradient and get:  </p>
-<div class="math">$$-2H^{T}(\vec{y}-\vec{H}w)+2\lambda w$$</div>
-<p>Set the gradient = 0:  </p>
-<div class="math">$$\triangledown cost(w) = -2H^{T}(\vec{y}-\vec{H}w)+2\lambda I w = 0$$</div>
-<p>Solve it and get:  </p>
-<div class="math">$$\hat{w}^{ridge}=(H^{T}\vec{H}+\lambda I)^{-1}H^{T}\vec{y}$$</div>
-<p>If \( \lambda=0\),then \( \hat{w}^{ridge}=(H^{T}H)^{-1}H^{T}y=\hat{w}^{LS}\)  </p>
-<p>if \( \lambda=\infty\), then \( \hat{w}^{ridge}=0\). It's like divded by \(\infty\)  </p>
-<p>Note that the term \(\lambda I\) in \( \hat{w}^{ridge}\) will always make \((H^{T}\vec{H}+\lambda I) \) invertible if \( \lambda &gt; 0\) even if \( N&lt;D\) where \(N\) is the numebr of data points and \( D\) is how many features we consider. Unfortunately the complexity of inverse is \( O(D^3)\). So we turn to gradient descent.  </p>
-<p>Take a look at the jth feature weight:  </p>
-<div class="math">$$w_{j}^{(t+1)}\leftarrow w_{j}^{(t)}-\eta[-2\sum_{i=1}^{N}h_{j}(x_{i})(y_i-\hat{y_i}(w^{t}))+2\lambda w_{j}^{(t)}]$$</div>
-<p>That is:  </p>
-<div class="math">$$w_{j}^{(t+1)}\leftarrow (1-2\eta \lambda)w_{j}^{(t)}+2\eta h_{j}(x_{i})(y_i-\hat{y_i}(w^{t}))$$</div>
-<p>Note that the second term of the right side is the same as the term we use to update the original RSS. The difference is the \( -2\eta \lambda \). It tells that on the basis of the original update, we minus a term, so the effect is like shrinking the result. The process help us avoid that w becomse too large. So the track will be like vibration before we reach the destination.  </p>
-<h1>Practical Issues</h1>
-<h4>Cross-validation</h4>
-<p>We have said validation is used to choose \( \lambda\). If our data amount is not enough, cross-validation comes to our mind. We divide randomly train data into \( K\) folders, pick out \( K-1\) set to train our model and use the last group to validate. Iterate this process on every folder of data. So at last we will have \( K \) errors. And for this specific \(\lambda \) we can have :  </p>
-<div class="math">$$CV(\lambda)=\frac{1}{K}\sum_{k=1}^{K}error_{k}(\lambda)$$</div>
-<p>So the task is to find \(\lambda^*\) to minimize the \( CV(K)\). How many folders should we use? If \(K=N \), it is leave-one-out cross validtion. Typically, let K=5 or 10. </p>
-<h4>Handle the intercept</h4>
-<p>Given a vector of coefficients, \( \lambda\) penalize the constant feature, making \( w_0\) small. It is not necessary. So we have two options. First one is leave the intercept alone. The modified gradient descent is:  </p>
-<hr />
-<p>while \( ||\triangledown RSS(w^{(t)})||&gt;\epsilon\):<br />
-&ensp;&ensp;&ensp;&ensp;for j=0,...D:<br />
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;partial[j] = \(-2\sum_{i=1}^{N}h_j(x_i)(y_i-\hat{y_i}(w^{(t)})) \)  </p>
-<p>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;if j = 0:<br />
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;\( w_0^{(t+1)}\leftarrow w_0^{t}-\eta *partial[j]\)<br />
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;else:  </p>
-<p>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp; \( w_0^{(t+1)}\leftarrow (1-2\eta \lambda)w_0^{(t)}- \eta *partial[j] \)<br />
-\( t\leftarrow t+1\)  </p>
-<hr />
-<p>Another option is center the data first. It means transform y to have 0 mean.Then run nomal ridge regression on the normalized y.  </p>
-<h1>Summary</h1>
-<p>In this article we talked start from the tradeoff between bias and variance. To achieve the balance we introduce tuning parameter \( \lambda\) to control the model complexity. It shrinks the feature coefficients when gradient descent is carried out. Note that the cost function now is the sum of RSS and magnitude of the coefficients. For ridge regression the magnitude is calculated by norm 2. Next we will talk about using norm 1. It will be the "least absolute shrinkage and selection operator", LASSO for short.</p>
+<p>3 Issues with standard lasso objective  </p>
+<ul>
+<li>With group of highly correlated features, lasso tends to select amongst them arbitrarily  </li>
+<li>Often, empirically ridge regression outperforms lasso, but lasso leads to a sparser solution.  </li>
+</ul>
+<p>To address these issues we can use hybrid penalties of \( l_1 \) and \( l_2\) norms. </p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -170,6 +216,21 @@
                 <section id="content" class="body">
                     <h1>Other articles</h1>
                     <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/regression_4_ridge_regression.html" rel="bookmark"
+                           title="Permalink to Regression_4_Ridge_Regression">Regression_4_Ridge_Regression</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Fri 08 April 2016</span>
+<span>| tags: <a href="/tag/regression.html">regression</a></span>
+</footer><!-- /.post-info -->                <p>Previously we have talked about simple regression and for a machine learning model we want to get a tradeoff between bias and variance. Now we introduce one tuning parameter and check how ridge regression works.</p>
+                <a class="readmore" href="/regression_4_ridge_regression.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
