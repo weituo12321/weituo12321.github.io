@@ -26,135 +26,53 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="/regression_5_lasso.html">Regression_5_LASSO</a></h1>
+                    <h1 class="entry-title"><a href="/regression_6_nearest-neighbor-and-kernel-regression.html">Regression_6_Nearest Neighbor and Kernel Regression</a></h1>
 <footer class="post-info">
-        <span>Fri 15 April 2016</span>
+        <span>Sun 17 April 2016</span>
 <span>| tags: <a href="/tag/regression.html">regression</a></span>
-</footer><!-- /.post-info --><h1>Feature Selection</h1>
-<p>Why do we need feature selection? The first consideration is for computational efficiency. Too many features will cost too much computing resources. If we select out the features then the coefficients vector will be sparse so some calculations are only associated with the non-zero values. The second consideration is interpretability. We want to focus on the features related to our final target. The question is how to select the features.  </p>
-<h4>Option 1: Subsets Selection</h4>
-<p>Suppose we have 8 features in total to evaluate the price of the house. We start from one-feature model(it means only one feature is used in these models) and evaluate the RSS(residual sum of square) of each model. Then we evaluate all the two-feature models(it means two features are used in these models). Keep doing so until all 8 features are used. Note that in this brute force subset selection, best model of size k need not contain features of best model of size k-1. It means the feature subsets are not necessarily nested. If we draw the RSS versus the number of features we get the following figure.  </p>
-<p><img alt="im23" src="/images/im23.png" />  </p>
-<p>Option 1 is obviously not efficient for feature selection. If we have D features in total, then the complexity of "all subsets" will be \( 2^{D+1}\). It is typically computational infeasible.  </p>
-<h4>Option 2: Greedy Algorithm</h4>
-<p>Similar to the first option, but keep features of model of size k-1 when we begin to choose the kth feature. Note that training error never increases and solutions eventually meet to the "all sets" solution. When should we stop? When the training error is low enough? NO! We know that low training error doesn't mean anything. When the test error is low enough? NO! Do not touch test data! For this question we still turn to validation or cross validation for help. How many models are evaluated? Well, in the first step, we evaluate D models. If one feature add for each step, then in the second step, D-1 models will be evaluated. As the process goes on, we will end up with all feature model. So the complexity will be \( O(D^2)\) which is much much less than \( 2^D\). Also, other greedy algorithms like backforwards(starts from whole set and reduce features each step) or combination of backwards and forwards.  </p>
-<h4>Option 3: Regularize</h4>
-<p>Finally we come to our main hero in this article. Let's recap ridge regression a little bit here. Remember the total cost consists of measure of fit and measure of magnitude of coefficients. We use \( \lambda\) to adjust the measure of magnitude. In this way we can achieve a tradoff between bias and variance. Particularly, the ridge regression uses norm 2 as the magnitude of coefficients. Note that this way will shrink the \( ||w||\) to a very small value but can't force it to 0. Recall our goal of feature selection is to get rid of unnecessary features. It indicates the corresponding coefficients will be 0. Instead of searching over a discrete set of solutions, can we start from the whole set of features and use regularization to force some coefficients to 0? The answer is YES.  </p>
-<p>Someone may propose that for a tradeoff between bias and variance, why not thresholding coefficients in the ridge regression? For example, we set a threshold 5. In the vector of coefficients \( \vec{w}\), if the \( w_{j}\) is larger than 5, we keep it. Else we set it as 0. There is a problem doing so. For example, we look at two related features: <em># bathrooms</em> and <em># showers</em>. These two are highly related even equal to each other. For this case, ridge regression tends to make both coefficients very small so that these two features will be ignored in the thresholding. In fact, if we eliminate <em># showers</em>, the influence of the coefficient of <em># showers</em> will be transferred to <em># bathrooms</em> which means the coefficient of <em># bathrooms</em> may become larger than the threshold so that it will be kept. So the point here is: if the features are strongly correlated, ridge regression prefer a model that assign small coefficients to each redundant feature rather than get rid of redundant coefficients.  </p>
-<p>To achieve the effect of feature selection, we use \(l_1\) norm for the measure of magnitude. Still \(\lambda \) is used to tune the norm. If \( \lambda = 0\), then \(\hat{w}^{lasso}=\hat{w}^{LS} \). If \( \lambda=\infty\), then \( \hat{w}^{lasso}=0\). If \( \lambda\) is in between, then \(0 \le ||\hat{w}^{lasso}|| \le ||\hat{w}^{LS}||\).  </p>
-<p>We can compare the coefficient path of ridge regression and lasso.   </p>
-<p><img alt="im24" src="/images/im24.png" />
-<img alt="im25" src="/images/im25.png" />  </p>
-<p>It can be seen that the coefficients in lasso prefer to touch the axis first and the whole figure looks like many taut ropes.  </p>
-<p>On the other hand we can also compare the ridge cost and lasso cost in 2D plane. Note that 2D means we have two coefficients \( \vec{w}=(w_0, w_1)\). And the total cost is:  </p>
-<div class="math">$$RSS(\hat{w})+\lambda||w||_2^{2}=\sum_{i=1}^{N}(y_i-w_0h_0(x_i)-w_1h_1(x_i))^2+\lambda(w_0^2+w_1^2)$$</div>
-<p>If we look at the first part of the right side of the above equation, it is a ellipse. The second part is a circle whose center is the origin and radius is \( \frac{1}{\lambda}\). When \( \lambda \rightarrow 0\), the radius \(\rightarrow  \infty\), then the optimal solution will be \(\hat{w}^{LS} \). if \(\lambda \rightarrow \infty \), the radius \( \rightarrow 0\), then the optimal solution will be \( \vec{0}\). If \( \lambda\) in between, the solution will be between 0~\(\hat{w}^{LS}\). During \(\lambda \) changes from 0 to \(\infty \), the solution will leave \(\hat{w}^{LS} \) and shrink to the origin along a smooth curve. The contour plot will be as follows:  </p>
-<p><img alt="im26" src="/images/im26.png" />  </p>
-<p>How about lasso? Still the total cost funtion will be written as follows:  </p>
-<div class="math">$$Rss(w)+\lambda||w||_1=\sum_{i=1}^{N}(y_i-w_0h_0(x_i)-w_1h_1(x_i))^2+\lambda(|w_0|+|w_1|)$$</div>
-<p>The first term of the right side of equation does not change. Its contour plot in 2D plane is still a ellipse. The second term defines a "diamond" in the 2D plane. We will see that as \( \lambda \) ranges from 0 to \( \infty \), the solution will first hit the \( w_1 \) axis, then down to origin. It means the contour will first touch the corners of \( l_1 \) penalty. The track looks like the following graph.  </p>
-<p><img alt="im27" src="/images/im27.png" />  </p>
-<p>So if we refit the high-order polynomial model using \( l_1 \) penalty, as the penalty (\( \lambda \))gets larger, the \( \vec{w} \) becomes sparser.  </p>
-<h1>Optimize Lasso</h1>
-<p>Since we have seen the effect of lasso, a natural question is how to optimize the total cost. In particular, what's the derivative of \( |w_j|\)? It is easy to find out that when \( w_j \) is positive and negative, the corresponding derivative is 1 and -1. Unfortunately, there exists no derivative when \( w_j =0\). Before we start optimizing the total cost we introduce some aside knowledge here.  </p>
-<h4>Aside 1: Coordinate Descent</h4>
-<p>The goal is to minimize some function \( g(\vec{w}) = g(w_0, w_1,...,w_D) \). So it looks like:  </p>
-<hr />
-<p>Initialize \(\hat{w}=0\)<br />
-while not converged:<br />
-&ensp;&ensp;&ensp;&ensp;pick a coordinate j:  <br />
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
-\( w_j \leftarrow min_{w_j} g(\vec{w}) \)  </p>
-<hr />
-<p>Note that except for \( w_j\) all the values of \( \vec{w}\) are values of previous iteration. It looks like the expectation maximization process. We first pursue the optimal value of one coeeficient, then change direction and continue to do that. Note that in this process we do not need to choose the step size. This method is very useful for many problems among which is the lasso optimization. It converges for lasso objective.  </p>
-<h4>Aside 2: Normalizing Features</h4>
-<p>Different features have different range of values. For example, the size of the house may be 600 square feet, the number of bathrooms may be 3. The goal of normalizing features is to scale the training columns and make each value of features into same range. It can be described as follows:  </p>
-<div class="math">$$\bar{h_j(x_k)}=\frac{h_j(x_k)}{\sqrt{\sum_{i=1}^{N}h_j(x_i)^2}}$$</div>
-<p>Remember that \( \sqrt{\sum_{i=1}^{N}h_j(x_i)^2} \) is the scale factors. Apply the same scale factor to the test data!! Don't forget that. Do not recalculate the normalizer using test data!!  </p>
-<h4>Aside 3: Coordinate descent for unregularized regression</h4>
-<p>We first take a look at how coordinate descent works in simple regression we have discussed before. Note that normalized features are used here.  </p>
-<div class="math">$$Rss(\vec{w})=\sum_{i=1}^{N}(y_i-\sum_{j=0}^{D}w_j\bar{h_j(x_i)})^2$$</div>
-<p>Take the partial derivative with respect to \( w_j\). It means we fix all the coordinates except for \( w_j \):  </p>
-<div class="math">$$\frac{\partial}{\partial{w_j}}Rss(w)=-2\sum_{i=1}^{N}\bar{h_j(x_i)}(y_i-\sum_{k\ne j}w_k\bar{h_k}(x_i)-w_j\bar{h_j(x_i)})$$</div>
-<div class="math">$$=-2\sum_{i=1}^{N}\bar{h_j(x_i)}(y_i-\sum_{k\ne j}w_k\bar{h_k}(x_i))+2w_j\sum_{i=1}^{N}\bar{h_j(x_i)}^2$$</div>
-<div class="math">$$=-2\sum_{i=1}^{N}\bar{h_j(x_i)}(y_i-\sum_{k\ne j}w_k\bar{h_k}(x_i))+2w_j$$</div>
-<p>Suppose<br />
-</p>
-<div class="math">$$\rho_j=\sum_{i=1}^{N}\bar{h_j(x_i)}(y_i-\sum_{k\ne j}w_k\bar{h_k}(x_i))$$</div>
-<p>Then we have<br />
-</p>
-<div class="math">$$\frac{\partial}{\partial{w_j}}Rss(w)=-2\rho_j+2w_j$$</div>
-<p>Let the derivative to be 0 we have \(\hat{w_j}=\rho_j \). So the whole algorithm can be described as follows:  </p>
-<hr />
-<p>Initialize \(\hat{w}=0\)<br />
-while not converged:<br />
-&ensp;&ensp;&ensp;&ensp;for j = 0,1,...D:<br />
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;compute</p>
-<div class="math">$$\rho_j=\sum_{i=1}^{N}\bar{h_j(x_i)}(y_i-\sum_{k\ne j}w_k\bar{h_k}(x_i))$$</div>
-<p>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;if in LS:<br />
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp; set \( \hat{w}_j = \rho_j \)<br />
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;if in LASSO:<br />
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
-set \( \hat{w}_j =\) \( </p>
-<div class="math">\begin{array}{c} \rho_j + \frac{\lambda}{2} if \rho_j&lt;-\frac{\lambda}{2}  \\ 0 \\ \rho_j - \frac{\lambda}{2} if \rho_j&gt;\frac{\lambda}{2}  \end{array}</div>
-<p> \)  </p>
-<hr />
-<p>For the LASSO result we call it soft thresholding and it can be described as following picture:  </p>
-<p><img alt="im28" src="/images/im28.png" />  </p>
-<p>We can see that the dotted line is the ridge regression. It does shrink the coeficients but never forces them to 0. The broken line is for LASSO. It shrinks the coefficients and for the middle range it forces the coefficients to 0.  </p>
-<p>Another practical problem is when to stop the iteration. For convex problems, the process will take smaller and smaller steps. Here steps means the difference between \( w_j^{(t)} \)and \(w_j^{(t+1)} \). So measure the size of steps taken in a full loop over all features. If the max step &lt; \(\epsilon\), then we stop.  </p>
-<p>Check some other ideas on the LASSO solver:<br />
-Parallel stochastic gradient descent<br />
-Alternating directions method of multipliers(ADMM)  </p>
-<p>So we formalize the coordinate descent algorithm for lass with unformalized features as follows:  </p>
-<hr />
-<p>Precompute: \(z_j = \sum_{i=1}^{N}h_j(x_i)^2 \)<br />
-Initialize \( \hat{w} = 0 \)  </p>
-<p>while not converged:<br />
-&ensp;&ensp;&ensp;&ensp;for j = 0,1,...,D:<br />
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;compute 
-\( \rho_j = \sum_{i=1}^{N}h_j(x_i)(y_i- \hat{y}_i (\hat{w}^{-j})) \) (-j means except for j)  </p>
-<p>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;set  </p>
-<div class="math">$$\hat{w}_j =\{ \begin{array}{c} \frac{\rho_j + \frac{\lambda}{2}}{z_j} if \rho_j&lt;-\frac{\lambda}{2}  \\ 0 \\ \frac{\rho_j - \frac{\lambda}{2}}{z_j} if \rho_j&gt;\frac{\lambda}{2}  \end{array}$$</div>
-<hr />
-<h1>One More Thing</h1>
-<p>It is not surprising that my dear readers keep asking how to get the result of \( \hat{w}_j \) in the LASSO case. We write the total cost here:  </p>
-<div class="math">$$Rss(\vec{w})+\lambda||w||_1=\sum_{i=1}^{N}(y_i-\sum_{j=0}^{D}w_jh_j(x_i))^2+\lambda\sum_{j=0}^{D}|w_j|$$</div>
-<p>From previous content we know the derivative w.r.t \(w_j\) of the first term is:  </p>
-<div class="math">$$-2\rho_j+2w_jz_j$$</div>
-<p>where \( z_j\) is the precompute term \( \sum_{i=1}^{N}h_j(x_i)^2 \)  </p>
-<p>But how about \( \lambda \frac{\partial}{\partial{w_j}}=??\)  </p>
-<h4>Aside 1: gradients lower bound convex functions</h4>
-<p>For a given convec function \(g \), we have:  </p>
-<div class="math">$$g(b)\ge g(a) + \triangledown g(a)(b-a)$$</div>
-<p>The derivative function \( \triangledown g(a)\) is unique if \(g\) is differentiable at a. What if point a is not differentiable? We need subgradients. Subgradient is any plane that lower bounds the original function. Suppose \( V\in \partial g(x)\), and it satisfy the condition  \(g(b)\ge g(a) +V(b-a) \). Then we say \( V\) is the subgradient of \( g\) at x.  </p>
-<p>So for \( |x| \) we can draw so many planes that lower bounds the function if \( V\) ranges from [-1, 1].It looks like the followign figure:  </p>
-<p><img alt="im29" src="/images/im29.png" />  </p>
-<p>For the case in LASSO, we have:  </p>
-<div class="math">$$\lambda\partial_{sub,w_j}|w_j|= \begin{array}{c} -\lambda,if w_j&lt;0 \\ [-\lambda, \lambda], ifw_j=0 \\ \lambda, when w_j &gt; 0  \end{array}  $$</div>
-<p>So when we set gradient=0 we need to consider three cases.  </p>
-<p>case 1: \( w_j &lt; 0 \Rightarrow \rho_j &lt; -\frac{\lambda}{2}\)<br />
-\(2z_j\hat{w}_j - 2\rho_j - \lambda=0 \Rightarrow \hat{w}_j = \frac{\rho_j+\lambda/2}{z_j}\)  </p>
-<p>case 2: \( w_j=0 \Rightarrow 0 \in[-2\rho_j - \lambda, -2\rho_j + \lambda]\)<br />
-\( -\frac{\lambda}{2} \le \rho_j \le \frac{\lambda}{2} \)  </p>
-<p>case 3: \( w_j &gt; 0 \Rightarrow \rho_j &gt; \frac{\lambda}{2}\)<br />
-\(2z_j\hat{w}_j - 2\rho_j + \lambda=0 \Rightarrow \hat{w}_j = \frac{\rho_j-\lambda/2}{z_j}\)  </p>
-<p>So combining those three cases we have the final result as listed above and the soft thresholding. Math is so interesting right?  </p>
-<h4>Other practical issues</h4>
-<p>1 How to choose \(\lambda \) ?<br />
-We still use cross validation here, but it ends up choosing less sparse solutions. Thus what we get is a smaller \( \lambda\) than the optimal one for feature selection. Details can be seen from book <em>"Machine Learning: A probablistic perspective"</em>.  </p>
-<p>2 Debiasing LASSO<br />
-We know LASSO can select feature and it prefers models with more bias and less variance. To reduce bias we can do as follows:  </p>
-<ul>
-<li>run lasso to select features  </li>
-<li>run least squeares regression with only selected features  </li>
-</ul>
-<p>3 Issues with standard lasso objective  </p>
-<ul>
-<li>With group of highly correlated features, lasso tends to select amongst them arbitrarily  </li>
-<li>Often, empirically ridge regression outperforms lasso, but lasso leads to a sparser solution.  </li>
-</ul>
-<p>To address these issues we can use hybrid penalties of \( l_1 \) and \( l_2\) norms. </p>
+</footer><!-- /.post-info --><h1>Non-Parametric</h1>
+<p>So far all models we have talked about have a fixed structure that is supported by parameters. What does that mean? Given a data set, we always suppose a model form in advance. For example, we have 0 order, 1 order,  for a given data.  </p>
+<p><img alt="im30" src="/images/im30.png" />
+<img alt="im31" src="/images/im31.png" />  </p>
+<p>Also 2 order, 3 order polynomial for the same dataset.  </p>
+<p><img alt="im32" src="/images/im32.png" />
+<img alt="im33" src="/images/im33.png" />  </p>
+<p>Now we want to allow flexibility in \( f(x)\) having local structure. It means we want fit locally to each data point. A simple example is 1-nearest-neighbor regression. This example outputs the predicted value = "closest" \( y_i\). Suppose we only have four data points, and the model we built based on 1-nearest-neighbor model looks like the following figure.  </p>
+<p><img alt="im34" src="/images/im34.png" />  </p>
+<p>For a query point: \( \hat{x}_q \), the model is to find the "closest" \( x_i\) in the dataset.  </p>
+<div class="math">$$x_{min} \leftarrow min_i distance(x_i, x_q)$$</div>
+<p>A natural question is what the distance is. For one dimensional data, a good candidate is absolute difference, or Euclidean distances. For high dimensional data we can have:  </p>
+<div class="math">$$distance(x_i, x_q)=\sqrt{a_1(x_{i_1}-x_{{q_1}})^2 + a_2(x_{i_2}-x_{{q_2}})^2+...+a_d(x_{i_d}-x_{{q_d}})^2}$$</div>
+<p>We will see that 1-NN model is sensitive to regions with little data and also sensitive to noise data. So a more reliable estimate is based on a larger set of comparable cases. We call it K-NN which is K-nearest neighbor for short. The idea is also intuitive and simple.  </p>
+<p>For a given query point \( \hat{x}_q \):<br />
+First, we find \( k\) closest \( x_i \) in dataset \( (x_i), i\in [1,k]\) such that for any \( x_i \) not in the nearest neighbor set we have:  </p>
+<div class="math">$$distance(x_i, x_q)\ge distance(x_{NN_k}, x_q)$$</div>
+<p>Second, we predict the value using:  </p>
+<div class="math">$$\hat{y}_q=\frac{1}{k}(y_{NN_1}+y_{NN_2}+...y_{NN_k})=\frac{1}{k}\sum_{i=1}^{k}y_{NN_i}$$</div>
+<p>Generally k-NN can fit the data pretty well. It may look like the following figure.  </p>
+<p><img alt="im35" src="/images/im35.png" />  </p>
+<p>But it also reveals some problesm. We will see discontinuities as window moves on. One point may fall out of the window completely. It will cause step form jump even for two close data. For example, there are two houses of 2450 and 2451 square feet respectively. The price may be very different because of the jump. Another issue is the boundary sparse region. Check the begining and end of the curve, we see the value is almost a constant deviating the data set severely. In a nutshell, the k-NN's overall predictive accuracy is OK but for some specific prediction may be really bad.  </p>
+<h1>Weighted k-NN</h1>
+<p>We have introduced k-NN model in previous section. Now we continue to fix the problem that k-NN has. Note that prediction value is generated under the assumption that each data point in the window contributes equally to the prediction. A better idea is assign larger weights to the similar or closer data points but smaller weights to the less similar or distant data points in the list of k-NN. The general output looks like:  </p>
+<div class="math">$$y = \frac{w_1x_{NN_1}+w_2x_{NN_3}+...+w_kx_{NN_k}}{\sum weights}$$</div>
+<p>The issue is how to define the each \(w \) such that: <br />
+\( w\) is small when the \(distance(x_{NN_i}, x_q) \) is large and rather than vice versa. A intuitive idea is to use the inverse of the distance. As a matter of fact, it is time when kernel comes to help. We can define the weights as following:  </p>
+<div class="math">$$kernel_{\lambda}(|x_{NN_j}|-x_q)$$</div>
+<p>If we use the gaussian kernel, then it will be:  </p>
+<div class="math">$$kernel_{\lambda}(|x_{NN_j}-x_q|)=exp^{\frac{-(x_i-x_q)^2}{\lambda}}$$</div>
+<p>We have many other kernel stars which can be seen in the following figure:  </p>
+<p><img alt="im36" src="/images/im36.png" /></p>
+<p>Instead of just weighting nearest neighbor, we weigh all points and get our major hero today---kernel regression. Applause should be here! It looks like:  </p>
+<div class="math">$$\hat{y}_q=\frac{\sum_{i=1}^{N}c_{q_i}y_i}{\sum_{i=1}^{N}c_{q_i}}=\frac{\sum_{i=1}^{N}kernel_{\lambda}(distance(x_i,x_q))y_i}{\sum_{i=1}^{N}kernel_{\lambda}(distance(x_i,x_q))}$$</div>
+<p>It has another longer name in statistics: Nadaraya-Watson kernel weighted average. Kernel has bounded support so only subset of data is needed to compute local fit. The pracitical issue is how to choose \(\lambda \). So the following picture shows the influence of \( \lambda \). It is quite interesting! Thanks to Emily Fox, my teacher~  </p>
+<p><img alt="im37" src="/images/im37.png" />  </p>
+<p>Often the choice of kernel matters less than the choice of \( \lambda \). As we can see from the above figure, when \( \lambda \) decreases, we have a smaller region support; when \( \lambda \) increases, we have a larger region support. So smaller \( \lambda \) means large variance and larger \( \lambda \) means oversmoothed and has higher bias. Same story as befre, cross-validation help us to choose the proper \( \lambda \).  </p>
+<p>In a more general view, kernel regression is more like a local linear regression. Local linear fit reduces bias at boundaries with minimum increase in variance. Local quadratic fit doesn't help at boundaries and increases variance but does help capture curvature in the interior. With sufficient data, local polynomials of odd degree dominate those of even degress.  </p>
+<p>On the other hand, we have mentioned the non-parametric methods. k-NN and kernel regression are examples of non-parametric regression. Some characteristics of non-parametrics are: flexibility, few assumptions about \( f(\vec{x}) \) and complexity can grow largely with the number of observations N increases.  </p>
+<h1>Summary For Regression</h1>
+<p>Now curtains are falling down for the regression chapter. Even only using regression which have been talked so far, we can solve many problems now, no matter attending Kaggle or publishing papers. The below is a simple recap of what we have talked about.  </p>
+<p>First we started from simple regression with only one attributes. Then multiple entries are introduced which requires multiple regression. And assessment of our models are based on the total lost function. To restrict our models not to be overfitting, we add \( l_1\)(LASSO) or \(l_2\) (ridge regression) penalty to the total lost. We covered 3 components of error to reveal the focus of almost all machine learning models: trade off between bias and variance. To achieve the balance and tune the control paramter, we introduced validation and cross-validation method. To solve our models we talked about two general approaches. The first is analytical solution or closed form solution. The second one is iteration method including gradient descent(with step)and coordinate descent(without step). At last we covered nearest negihbor and discussed non-parametric approaches with kernel regression included.  </p>
+<p>Also there are so many other topics in regression which we may supplement later. For example, what if multiple outputs \( \vec{y}\) are desired in regression? What about aximum likelihood estimation for regression? When the errors follow normal distribution the result is similar to least squares methods. What if the errors follow other sorts of distribution? There is also another kind of regression model called regression trees. So stay hungry and stay foolish. Next chapter will be classification, in my view, is another super star problem in machine learning. Stay tuned~    </p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -216,6 +134,21 @@ We know LASSO can select feature and it prefers models with more bias and less v
                 <section id="content" class="body">
                     <h1>Other articles</h1>
                     <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/regression_5_lasso.html" rel="bookmark"
+                           title="Permalink to Regression_5_LASSO">Regression_5_LASSO</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Fri 15 April 2016</span>
+<span>| tags: <a href="/tag/regression.html">regression</a></span>
+</footer><!-- /.post-info -->                <p>Previously we have talked about ridge regression in which we used norm 2 as the constraints to balance the bias and variance. In this article, we will use norm 1 which is called least absolute shrinkage and selection operator and LASSO for short.</p>
+                <a class="readmore" href="/regression_5_lasso.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
