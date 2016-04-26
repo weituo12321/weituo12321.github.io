@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
         <meta charset="utf-8" />
-        <title>HardCoreAI - Machine_Learning</title>
+        <title>Classification_1_Linear_Classifiers</title>
         <link rel="stylesheet" href="/theme/css/main.css" />
 
         <!--[if IE]>
@@ -23,14 +23,19 @@
                 </ul>
                 </nav>
         </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/classification_1_linear_classifiers.html" rel="bookmark"
+           title="Permalink to Classification_1_Linear_Classifiers">Classification_1_Linear_Classifiers</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="/classification_1_linear_classifiers.html">Classification_1_Linear_Classifiers</a></h1>
+    <div class="entry-content">
 <footer class="post-info">
         <span>Sat 23 April 2016</span>
 <span>| tags: <a href="/tag/classification.html">classification</a></span>
-</footer><!-- /.post-info --><h1>Linear Classifiers</h1>
+</footer><!-- /.post-info -->      <h1>Linear Classifiers</h1>
 <p>We take sentiment analysis as an example here. At Yelp we can see many reviews about the food of a restaurant. The goal is to analyze whether the review is a "like" or "downvote". Take a closer look at the reviews we may see words like "awesome", "aweful" and some other nouns like "sushi", "ramen", etc. We call them the input \( \textbf{x}\). For the output, we start from two classes first and address multiclass later. If the review is a "like", the output is considered as \( \hat{y} = +1\). If the review is a "bad", then \( \hat{y}= -1\). The idea of a classifer is very natural: train data to get a score table. The table looks like the following figure.  </p>
 <p><img alt="clim1" src="/images/clim1.png" />  </p>
 <p>So for a given input, we use the table to calculate the score of a review. If the score larger than 0, we have a thumbs up else we have thumbs down. Different coefficient table means different decision boundary. A two coefficient example is as follows:  </p>
@@ -128,121 +133,11 @@ The sushi was good the service was OK  </p>
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-</script>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <ol id="posts-list" class="hfeed">
+</script>
+    </div><!-- /.entry-content -->
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/regression_6_nearest-neighbor-and-kernel-regression.html" rel="bookmark"
-                           title="Permalink to Regression_6_Nearest Neighbor and Kernel Regression">Regression_6_Nearest Neighbor and Kernel Regression</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sun 17 April 2016</span>
-<span>| tags: <a href="/tag/regression.html">regression</a></span>
-</footer><!-- /.post-info -->                <p>Previously we have talked about LASSO in which we used norm 1 as the constraints to select features ad get sparse solutions. In this article, we will continue to discuss nearest neighbor and kernel regression.</p>
-                <a class="readmore" href="/regression_6_nearest-neighbor-and-kernel-regression.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/regression_5_lasso.html" rel="bookmark"
-                           title="Permalink to Regression_5_LASSO">Regression_5_LASSO</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Fri 15 April 2016</span>
-<span>| tags: <a href="/tag/regression.html">regression</a></span>
-</footer><!-- /.post-info -->                <p>Previously we have talked about ridge regression in which we used norm 2 as the constraints to balance the bias and variance. In this article, we will use norm 1 which is called least absolute shrinkage and selection operator and LASSO for short.</p>
-                <a class="readmore" href="/regression_5_lasso.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/regression_4_ridge_regression.html" rel="bookmark"
-                           title="Permalink to Regression_4_Ridge_Regression">Regression_4_Ridge_Regression</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Fri 08 April 2016</span>
-<span>| tags: <a href="/tag/regression.html">regression</a></span>
-</footer><!-- /.post-info -->                <p>Previously we have talked about simple regression and for a machine learning model we want to get a tradeoff between bias and variance. Now we introduce one tuning parameter and check how ridge regression works.</p>
-                <a class="readmore" href="/regression_4_ridge_regression.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/regression_3_simple_regression.html" rel="bookmark"
-                           title="Permalink to Regression_3_Simple_Regression">Regression_3_Simple_Regression</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Tue 05 April 2016</span>
-<span>| tags: <a href="/tag/regression.html">regression</a></span>
-</footer><!-- /.post-info -->                <p>We have generic models and algorithms to solve them. But we always have to worry about how much i am losing. If our model prediction is too low, then we only get low offers; if model prediction is too high, we get few looks and no offers. So this article will presents how to assess our models.</p>
-                <a class="readmore" href="/regression_3_simple_regression.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/regression_2_multiple_regression.html" rel="bookmark"
-                           title="Permalink to Regression_2_Multiple_Regression">Regression_2_Multiple_Regression</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sat 02 April 2016</span>
-<span>| tags: <a href="/tag/regression.html">regression</a></span>
-</footer><!-- /.post-info -->                <p>What is regression? In this article, i start from simple examples and extract out the basic model for regression problems. Then i will continue to talk about practical issues when we use the model to solve real problems.</p>
-                <a class="readmore" href="/regression_2_multiple_regression.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/regression_1_simple_regression.html" rel="bookmark"
-                           title="Permalink to Regression_1_Simple_Regression">Regression_1_Simple_Regression</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Mon 21 March 2016</span>
-<span>| tags: <a href="/tag/regression.html">regression</a></span>
-</footer><!-- /.post-info -->                <p>What is regression? In this article, i start from simple examples and extract out the basic model for regression problems. Then i will continue to talk about practical issues when we use the model to solve real problems.</p>
-                <a class="readmore" href="/regression_1_simple_regression.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/re.html" rel="bookmark"
-                           title="Permalink to First-Blog">First-Blog</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sat 19 March 2016</span>
-<span>| tags: <a href="/tag/pelican.html">pelican</a><a href="/tag/publishing.html">publishing</a></span>
-</footer><!-- /.post-info -->                <p>Try some format</p>
-                <a class="readmore" href="/re.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-            </ol><!-- /#posts-list -->
-<p class="paginator">
-    Page 1 / 1
-</p>
-            </section><!-- /#content -->
+  </article>
+</section>
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>blogroll</h2>
