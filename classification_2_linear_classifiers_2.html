@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Classification_2_Linear_Classifiers_2</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a href="https://github.com/weituo12321">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="/">HardCoreAI </a></h1>
+                <nav><ul>
+                    <li><a href="/category/announcement.html">Announcement</a></li>
+                    <li class="active"><a href="/category/machine_learning.html">Machine_Learning</a></li>
+                    <li><a href="/category/trial.html">trial</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/classification_2_linear_classifiers_2.html" rel="bookmark"
+           title="Permalink to Classification_2_Linear_Classifiers_2">Classification_2_Linear_Classifiers_2</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <span>Sat 23 April 2016</span>
+<span>| tags: <a href="/tag/classification.html">classification</a></span>
+</footer><!-- /.post-info -->      <h1>Maximum Likelihood Estimation</h1>
+<p>In the regression section, we use the residual sum of square (RSS) as the model quality metric. Here in classification section, we use likelihood function to evaluate a classifier. The best model will have a highest likelihood. For example, we have a input contains two <em>awesome</em> and 1 <em>aweful</em>. If our model is good, then it should predict +1 with high probability. So the problem is to pick \( \vec{w}\) to maximize \( P(y=+1|2,1,w)\). Also we have another input contains 0 <em>awesome</em> and two <em>aweful</em>. If our model is good, then it should predict -1 with high probability. So the problem is to pick \( \vec{w}\) to maximize \( P(y=-1|0,2,w)\). However, we have a lot of data. So the problem is how to combine these scattered metrics into a single measure of quality? A natural way is to multiply probabilities (we assume that observations are independent). So we have:  </p>
+<div class="math">$$l(w)=P(y=+1|2,1,w)P(y=-1|0,2,w)P(y=-1|2,3,w)...$$</div>
+<div class="math">$$=\prod_{i=1}^{N}P(y_i| \vec{x_i}, \vec{w})$$</div>
+<p>So our goal is to find proper \( w\) to make \( l(w)\) as large as possible.  </p>
+<h1>Gradient Ascent</h1>
+<p>We first formalize our problem as follows:  </p>
+<div class="math">$$max_w\prod_{i=1}^{N}P(y_i|\vec{x_i}, \vec{w})$$</div>
+<p>Like what we did in regression, we use the hill climbing method though it is to find the max value. So the idea looks like:  </p>
+<div class="math">$$w^{(t+1)} \leftarrow w^{(t)}+\eta \frac{dl(w)}{dw}|_{w^{(t)}}$$</div>
+<p>Note that we use + since the convex function is opposite to what we met in regression. In practice, we stop when the derivative is small enough. See, this is almost the same content in the regression section.   </p>
+<p>Let's focus on the logistic regression first. We introduce a indicator function as follows:  </p>
+<div class="math">$$1[y_i = +1]= \{ \begin{array}{c} 1 if y_i = +1 \\ 0 if y_i=-1 \end{array}$$</div>
+<p>Here we directly give the equation of derivative. In the last part we will derive how to get it.</p>
+<div class="math">$$\frac{\partial l(\vec{w})}{w_j}=\sum_{i=1}^{N}h_j(x_i)(1[y_i=+1] - P(y=+1|x_i,w))$$</div>
+<p>\( h_j(x_i)\) is the \(j_{th} \) feature value and the left part after it is the difference between truth and prediction.  </p>
+<p>Interpretation of the deravative will be like follows (suppose \(h_j(x_i) = 1 \) for simplicity):<br />
+If the truth \( y_i = +1\), and predicted \( P(y=+1|x_i,w) \approx 1\), then we know the difference of the truth and predictions is as small as 0, so we don't change anything. Otherwise, if predicted \( P(y=+1|x_i,w) \approx 0\), then we know the difference of the truth and predictions is as small as 1, so we increases \( w_j \), then the score of \( x_i\) increases, and \( P(y=+1|x_i, w)\) increases. For the case in which \( y_i = -1\) the discussion scheme is the same. We skip it and give the iteration algorithm as follows:  </p>
+<hr />
+<p>init \(w^{(1)}=0 \) or randomly assigned<br />
+while \(||\triangledown l(w^{(t)})|| &gt; \epsilon \):<br />
+&ensp;&ensp;&ensp;&ensp;for j = 0,... D:<br />
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;partial[j]=\(\sum_{i=1}^{N}h_j(x_i)(1[y_i=+1] - P(y=+1|x_i,w)) \)  </p>
+<p>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp; \(w^{(t+1)} \leftarrow w^{(t)}+\eta \frac{dl(w)}{dw}|_{w^{(t)}} \)  </p>
+<p>\(t \leftarrow t+1 \)  </p>
+<hr />
+<p>For the step size \( \eta\) we still have the same schem like regression to choose a proper one. Small step size means a slower convergency speed, and a large step size means vibaration around the optimal solution. A practical idea is use exponetial space to fix the lower bound and upper bound, and then continue to search the best step size within the range. Another tip is to use a step that decreases as iterations increase. See, these contents have been mentioned in the regression secton.  </p>
+<h1>Math Time</h1>
+<p>We will derive the gradient for logistic regression. For a product of many probabilities, the log trick is usually used to turn products to sums and doesn't change the maximum. In general we have:  </p>
+<div class="math">$$ll(w)=\sum_{i=1}^{N}lnP(y_i|x_i,w)=\sum_{i=1}^{N}[I[y_i=+1]lnP(y=+1|x_i,w)+I[y_i=-1]lnP(y=-1|x_i,w)]$$</div>
+<p>And  </p>
+<div class="math">$$P(y=+1|x_i,w)=\frac{1}{1+e^{-w^Th(x)}}$$</div>
+<p><br />
+</p>
+<div class="math">$$P(y=-1|x_i,w)=\frac{e^{-w^Th(x)}}{1+e^{-w^Th(x)}}$$</div>
+<p>So  </p>
+<div class="math">$$ll(w)=-(1- I[y_i=+1])w^Th(x_i)-ln(1+e^{-w^Th(x_i)})$$</div>
+<p>We take a look at the gradient for 1 data point  </p>
+<div class="math">$$\frac{\partial ll}{\partial w_j}=-(1-I[y_i=+1])h(x_i)+h_j(x_i)\frac{e^{-w^Th(x_i)}}{1+e^{-w^Th(x_i)}}$$</div>
+<p>Note that:  </p>
+<div class="math">$$\frac{e^{-w^Th(x_i)}}{1+e^{-w^Th(x_i)}}=P(y=-1|x_i,w)=1-P(y=+1|x_i,w)$$</div>
+<p>So the gradient one data points is:<br />
+</p>
+<div class="math">$$h_j(x_i)(I[y_i=+1]-P(y=+1|x_i,w))$$</div>
+<p>Then for overall data points we have:  </p>
+<div class="math">$$\frac{\partial ll}{\partial w_j}=\sum_{i=1}^{N}h_j(x_i)(I[y_i=+1]-P(y=+1|x_i,w))$$</div>
+<h1>Overfitting and Regularization</h1>
+<p>We skip the concept of overfitting which can be seen in regression chapter. For classification, the decision boundary is determined by the model complexity. We have the same figure as the one in regression.  </p>
+<p><img alt="clim8" src="/images/clim8.png" />   </p>
+<p>The horizontal axis means the model complexity. How about the effect of coefficients given model complexity? It turns out that the model with higher norm value is preferred since it will generate a higher probability.  </p>
+<p><img alt="clim9" src="/images/clim9.png" />  </p>
+<p>Another view starts from if the data are linearly separable. If there exists coefficients \( \hat{w}\) such that all positive training data have score(x) &gt; 0 and all negative training data have score(x) &lt; 0. We take a straight line for example. If the data is separable under coefficients \( \hat{w} \), then there will be infinite coefficients such that linearly separate the data because we only need to scale the \( \hat{w}\). But the MLE scheme prefer the coefficients with larger values since it generates higher proabbility. It can be intepreted as following figure:  </p>
+<p><img alt="clim10" src="/images/clim10.png" />  </p>
+<p>The problem of this phenomenon is we will always get overconfident predictions. Thus regularization is needed. Same as the regression does, we have \( l_1, l_2\) choices for regularizer. But the object function is a little different since we are looking for maximum value. The fittness and magnitude of coefficients is connected by minus. </p>
+<div class="math">$$total=(log)likelihood - \lambda ||w||_2^2$$</div>
+<p>or  </p>
+<div class="math">$$total=(log)likelihood - \lambda ||w||_1$$</div>
+<p>The discussion about effect of the \( \lambda \) in regression chapter also hold here. Cross validation is also used to choose the proper \( \lambda \). We are not going to dive into it. Just review articles in regression. Next we will introduce a totally different model called decision trees.   </p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/VicWeituo">twitter</a></li>
+                            <li><a href="https://github.com/weituo12321">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>
