@@ -26,52 +26,60 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="/classification_1_linear_classifiers.html">Classification_1_Linear_Classifiers</a></h1>
+                    <h1 class="entry-title"><a href="/classification_3_decision_trees.html">Classification_3_Decision_Trees</a></h1>
 <footer class="post-info">
-        <span>Sat 23 April 2016</span>
+        <span>Wed 27 April 2016</span>
 <span>| tags: <a href="/tag/classification.html">classification</a></span>
-</footer><!-- /.post-info --><h1>Linear Classifiers</h1>
-<p>We take sentiment analysis as an example here. At Yelp we can see many reviews about the food of a restaurant. The goal is to analyze whether the review is a "like" or "downvote". Take a closer look at the reviews we may see words like "awesome", "aweful" and some other nouns like "sushi", "ramen", etc. We call them the input \( \textbf{x}\). For the output, we start from two classes first and address multiclass later. If the review is a "like", the output is considered as \( \hat{y} = +1\). If the review is a "bad", then \( \hat{y}= -1\). The idea of a classifer is very natural: train data to get a score table. The table looks like the following figure.  </p>
-<p><img alt="clim1" src="/images/clim1.png" />  </p>
-<p>So for a given input, we use the table to calculate the score of a review. If the score larger than 0, we have a thumbs up else we have thumbs down. Different coefficient table means different decision boundary. A two coefficient example is as follows:  </p>
-<p><img alt="clim2" src="/images/clim2.png" />  </p>
-<p>Then it goes like the regression problem but we have a sign function on the score. So a simple hyperplane will be:  </p>
-<div class="math">$$\hat{y}_i=sign(score(\bar{x}_i))$$</div>
-<p>where  </p>
-<div class="math">$$score(\bar{x}_i)=w_0+w_1x_i[1]+...w_dx[d]=\vec{w}x_i$$</div>
-<p>\( x_i[j]\)means the \( j_{th}\) value of data point i. A more generic model will be like:  </p>
-<div class="math">$$score(x_i)=w_0h_0(x_i)+w_1h_1(x_i)+...w_dh_d(x_i)=\sum_{j=0}^Dw_jh_j(x_i)=\vec{w}^{T}h(x_i)$$</div>
-<p>Then the feature of \(h_j(x)\) can be the number of <em>awesome</em> or the number of <em>aweful</em> or the logarithm of the product of these two numbers or the tf-idf(term frequency-inverse document frequency) value of <em>aweful</em> etc.  </p>
-<h1>Conditional Probability</h1>
-<p>We can output the +1 or -1. But how sure are we about the prediction? Take the following two examples:  </p>
-<blockquote>
-<p>The sushi and everything else were awesome<br />
-The sushi was good the service was OK  </p>
-</blockquote>
-<p>There is a "awesome" in the first review. So we can say \( \hat{y}= +1 \) with high probability. The second review only contains a "OK". So we are not sure about the sentiment, then we many have \(\hat{y}= +1 \) with probability 0.5. We here inteprete probability as degree of belief. Given the input review we can get the result with certain amount of belief.  </p>
-<p><img alt="clim3" src="/images/clim3.png" />  </p>
-<p>Note that we have:<br />
-</p>
-<div class="math">$$P(y=+1|x_i) + P(y=-1|x_i)=1$$</div>
-<div class="math">$$0\le P(y=+1|x_i) \le 1$$</div>
-<div class="math">$$0\le P(y=-1|x_i) \le 1$$</div>
-<p>And also \(\sum_{i=1}^{N}P(y=+1|x_i) \) is not required to be 1.  </p>
-<p>We start from the score, so right now we need a function to link the score to the probability.  </p>
-<p><img alt="clim4" src="/images/clim4.png" />  </p>
-<p>A very good candidate to finish the link task is logistic function which looks like:  </p>
-<div class="math">$$sigmoid(score)=\frac{1}{1+e^{-score}}$$</div>
-<p>So given a data point \(x_i \) we have:  </p>
-<div class="math">$$P(y=+1|x_i,w)=\frac{1}{1+e^{-score(x_i)}} = \frac{1}{1+e^{-w^{T}(x_i)}}$$</div>
-<p>We can see the effect of each coefficients on logistic regression model.  </p>
-<p><img alt="clim5" src="/images/clim5.png" />  </p>
-<p>Naturally for the three coefficients model above, our goal if to find the "best" classifier who can maximize the quality metric over all possible \( w_0, w_1,w_2\).  We will talk about the metric in next particle. Before that, we need to address a practical issue: how to handle the categorical inputs?  </p>
-<h1>Categorical Inputs</h1>
-<p>It is very easy to handle with the numerical inputs like the number of some words. What if some attributes are catehorical inputs like the gender(male/female), the country of birth(China, USA,etc.), zipcode(10005,98195,etc.) A natural way to deal with these data is called 1-hot encoding. For example, we have 196 countries in data set. For a given data point, we use vector of length 196 and set the corresponding country as 1 and other countries as 0. It is like:  </p>
-<p><img alt="clim6" src="/images/clim6.png" />  </p>
-<p>Similarly, when we deal with the restaurant review, we can build up a dictionary of 10,000 words and set corresponding value of certain word as the frequency of that word.  </p>
-<p>How about multi-class classification problems? A natural way is to use 1 versus all idea. For example, we have C output classes, a natural idea is calculate the proability of each class and pick out the most likely class.  </p>
-<p><img alt="clim7" src="/images/clim7.png" />  </p>
-<p>From the figure above we know for each class, the decision boundary is not the same one, thus the coefficients are not the same. In next article,we will talk about the metric of our classification model </p>
+</footer><!-- /.post-info --><h1>Decision Tree</h1>
+<p>Think about a problem: what makes a load risky? We may list factors like credit, income, term, personla info and so on. We call these factors features or attributes. So the basic schema of decision tree as follows:  </p>
+<hr />
+<p>step 1: start with an empty tree<br />
+step 2: select a feature to split data<br />
+for each split of the tree:<br />
+&ensp;&ensp;&ensp;step 3: if nothing more to do, make predictions<br />
+&ensp;&ensp;&ensp;step 4: otherwise, go to step 2 and continue to do split(recursively)  </p>
+<hr />
+<p>From the basic steps, we have two problems: 1 how to choose the feature? 2 when to stop the recursive process? For the first question we can use the classification error to sift out the best feature.  </p>
+<p>To make a prediction we follow the majority vote principal. The major class will represent the class of the split. For example we have credit and term to consider the split. We can calculate classification error respectively and choose the better one. </p>
+<p><img alt="clim11" src="/images/clim11.png" />  </p>
+<p>We don't mention the entropy here since the effect will be the same. Entropy stuff will be provided later.  </p>
+<p>Another practical issue is how to deal with the continous numeric data. The answer is very natural: just use a threshold to split. The way to find the threshold is also simple.  </p>
+<hr />
+<p>step 1: sort the values of a feature \(h_j(x) \)<br />
+&ensp;&ensp;&ensp;let \(v_1,v_2,...v_N \) denote sorted values.  </p>
+<p>step 2: For \(i=1,...N-1 \)<br />
+&ensp;&ensp;&ensp; consider split \(t_i=(v_i+v_{i+1})/2 \)<br />
+&ensp;&ensp;&ensp; compute classification error for threshold split \(h_j(x) &gt;= t_i \)  </p>
+<p>&ensp;&ensp;&ensp; choose the \( t^*\) with the lowest classification error  </p>
+<hr />
+<p>Note that for the threshold split, we can reuse the features!  For the predictions we can also consider them as probabilities of the corresponding result. A key note for students who are struggling for machine learning tests: XOR is always a good example as an opposite. So when you come across questions like "list a opposite example blablabla" think about the XOR table.  </p>
+<h1>Preventing Overfitting</h1>
+<p>Training error reduces as depth increases but it's highly possible to be overfitting.  </p>
+<p><img alt="clim12" src="/images/clim12.png" /></p>
+<p>It is because every split will choose the lowest classification error which means reduce the training error. 
+According to <em>Occam Razor</em>, simpler trees means better model. For those who are not familar with <em>Occam Razor</em>, we give a brief note here: Among competing hypotheses, the one with fewest assumptions should be selected. We will cover it in more details in statistic folder. For example, we have model_1 and model_2. Model_1 has training error of 0.12 and validation error of 0.15. Model_2 has training error of 0.07 and validation error of 0.15. We will pick the model_1 since both of the two have the same validation error but the model_1 is a simpler one. To pick a simpler tree, we have two ways: The first one is stop learning algorithm before tree become too complex, which is early stopping. The second one is simplify tree after learning algorithm terminates, which is pruning.  </p>
+<h4>Early stopping</h4>
+<p>Condition 1: We can limit the depth of a tree. To set the maximum depth of a tree we can use the validation method. Condition 2: We can use classification error to limit the tree depth. If the classification error will not reduce as split goes on, we should stop. So a threshold error needs to be set in advance. Condition 3: We can stop if number of data points in a node is too small. So a minimum data point number should be set in advance.  </p>
+<h4>Pruning</h4>
+<p>The normal stopping conditions: all examples have the same target value and no more features to split on. We have introduced some early stopping conditions but there are some challenges with early stopping conditions. For example, for the early stopping condition 1, it is actually hard to know exactly when and where to stop. For the early stopping condition 2, we may miss good split after the useless split. To prove it, we can use XOR example here.(like i said, XOR is really a good opposite example for many problems). So the idea becomes: first train a complete tree, then prune it!  </p>
+<p>Formalization can be written as follows:  </p>
+<div class="math">$$cost = error(T) + \lambda L(T)$$</div>
+<p>where \(error(T) \) means the classification error and \(L(T) \) is the number of leaves. If \( \lambda = 0\), then it becomes a standard decision tree learning. If \(\lambda = \infty \), then \( \hat{y} = majority\). If \(\lambda \) in between, we get a balance between fit and complexity.  </p>
+<h1>Handling Missing Data</h1>
+<p>Strategy 1: Purification by skipping<br />
+If a few points contains unknown values, skip those points.<br />
+If a lot of points contain unknown values in certain feature, then skip that feature.<br />
+This idea is easy to understand but may lose important information.  </p>
+<p>Strategy 2: Purification by inputting missing data<br />
+Input rules 1<br />
+For categorical features, we use the majority value.<br />
+Input rules 2<br />
+For numerical features, we use the average or median.<br />
+There are some advanced methods like EM.<br />
+This idea is easy to understand and can be applied to many models, but may cause systematic errors. For example, feature "age" is missing in all banks in Washingto by state law.  </p>
+<p>Strategy 3: Adapt learning algorithm to be robust to missing data<br />
+For example, in decision trees, we associate "unknown" to one branch. So every decision tree node includes choice of response to missing data. This idea is good for prediction but we have to modify the whole model. Another practical issue is where to put the missing data?(i.e. associate which branch.) The solution is still choose branches which lead to least classification error.  </p>
+<p>Single decision tree or simple models seem very weak. Next we will talk about how to combine them to make a strong classifier.</p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -133,6 +141,21 @@ The sushi was good the service was OK  </p>
                 <section id="content" class="body">
                     <h1>Other articles</h1>
                     <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/classification_1_linear_classifiers.html" rel="bookmark"
+                           title="Permalink to Classification_1_Linear_Classifiers">Classification_1_Linear_Classifiers</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sat 23 April 2016</span>
+<span>| tags: <a href="/tag/classification.html">classification</a></span>
+</footer><!-- /.post-info -->                <p>What is classification? In previous chapter we have talked about regression. Instead of real values, classification outputs predictions as some boolean values or labels. Huge amount of problems in machine learning are classification problems such as sentiment analysis, spam filtering, webpage analysis, image classification, personalized medical diagnosis, etc. The models we will cover in this chapter will be linear classifiers, logistic regression, decision trees, and ensemble methods. If time is allowed, support vector machines will also be included. The algorithms to solve the models are gradient descent, stochastic gradient descent, recursive greedy and boosting. Some practical issues like handling missing data, precision-recall tradeoff, and online learning will also be talked about.</p>
+                <a class="readmore" href="/classification_1_linear_classifiers.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
