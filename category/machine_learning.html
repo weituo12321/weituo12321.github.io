@@ -26,60 +26,47 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="/classification_3_decision_trees.html">Classification_3_Decision_Trees</a></h1>
+                    <h1 class="entry-title"><a href="/classification_4_boosting.html">Classification_4_Boosting</a></h1>
 <footer class="post-info">
-        <span>Wed 27 April 2016</span>
+        <span>Thu 28 April 2016</span>
 <span>| tags: <a href="/tag/classification.html">classification</a></span>
-</footer><!-- /.post-info --><h1>Decision Tree</h1>
-<p>Think about a problem: what makes a load risky? We may list factors like credit, income, term, personla info and so on. We call these factors features or attributes. So the basic schema of decision tree as follows:  </p>
+</footer><!-- /.post-info --><h1>Boosting</h1>
+<p>As we konw from the discussion on the balance betweeen bias and variance, simple or weak classifiers have low variance but high bias. So an old question is: can a set of weak learners be combined to create a stronger learner? Then answer is YES! Ensemble method is the idea. It is a simple but very powerful approach and widely used in industry and win most Kaggle competitions. 
+Ensemble methods can be displayed as follows:  </p>
+<p><img alt="clim13" src="/images/clim13.png" />  </p>
+<p>General idea of ensemble methods is to train classifiers \(f_1(x), f_2(x),...f_T(x) \) and their coefficients \(\hat{w}_1, ... \hat{w}_T \) and then make the predictions:  </p>
+<div class="math">$$\hat{y}=sign(\sum_{t=1}^T\hat{w}_tf_t(\textbf{x}))$$</div>
+<p>Boosting is based on the ensemble idea. The simple classifier is decision stump which is decision tree of depth one. And boosting focus learning on points lead to high error. The idea is we first assign each data point weights and after the training, we will change the weights of each data points. We will increase the weight of wrong prediction. It's a general way in machine learning and we can take logistic regression as an example:  </p>
+<div class="math">$$w_j^{(t+1)} \leftarrow w_j^{t}+\eta \sum_{i=1}^{N} \alpha_ih_j(x_i)(I[y_i = +1] - P(y=+1|x_i,w))$$</div>
+<p>The \( \alpha_i\) is the weight of data point i.  </p>
+<p>Naturally, there are two practical problems. First, how to compute the coefficient \( \hat{w}_t\). Second, how to recompute weights \( \alpha_i \)  </p>
+<p>For the problem 1:<br />
+We introduce weighted classification error. The total weight of mistakes is <br />
+</p>
+<div class="math">$$ \sum_{i=1}^{N}\alpha_iI(\hat{y}_i \ne y_i) $$</div>
+<p>Total weight of all points is \( \sum_{i=1}^{N}\alpha_i\), and then we have weighted error to measure fraction of weight of mistakes: <em>weighted_error</em> = <em>total weight of mistakes</em> / <em>total weight of all data points</em>  </p>
+<p>The best model's weighted error wil be 0 and the worst will be 1. And the random classifier's weighted error is 0.5.  </p>
+<p>After we have the weighted error, we can compute the coefficients \( \hat{w}_t\) of classifier f_t(x) by following formula:  </p>
+<div class="math">$$\hat{w}_t=\frac{1}{2}ln(\frac{1-error_{weighted}(f_t)}{error_{weighted}(f_t)})$$</div>
+<p>Note that if a classifier's weighted error is too high close to 1 and maintains that "bad" performance, it is actually a awesome classifier since the 1 - <em>bad performance</em> is a pretty good result. This is so called jinx effect.  </p>
+<p>For problem 2:<br />
+if we already have coefficients \( \hat{w}_t\) we can update \(\alpha_i \) where classifier makes mistakes as follows:  </p>
+<p>if \( f_t(x_i)=y_i \), we have \( \alpha_i \leftarrow \alpha_ie^{-\hat{w}_t} \)  </p>
+<p>if \( f_t(x_i) \ne y_i \), we have \( \alpha_i \leftarrow \alpha_ie^{\hat{w}_t} \)  </p>
+<p>However, if data point \( x_i\) is often mistakenly predicted, then its weights \( \alpha_i \) will be very large. On the contrast, it will be very small. This causes numerical instability after many iterations. So a better way is to normalize weights to add up to 1 after every iteration as follows:<br />
+</p>
+<div class="math">$$\alpha_i = \frac{\alpha_i}{\sum_{i=1}^{N}\alpha_i}$$</div>
+<p>Thus we have a general procedure for boosted decison stumps:  </p>
 <hr />
-<p>step 1: start with an empty tree<br />
-step 2: select a feature to split data<br />
-for each split of the tree:<br />
-&ensp;&ensp;&ensp;step 3: if nothing more to do, make predictions<br />
-&ensp;&ensp;&ensp;step 4: otherwise, go to step 2 and continue to do split(recursively)  </p>
+<p>Start same weights \(\alpha_i =\frac{1}{N} \)<br />
+For t = 1,...T:<br />
+&ensp;&ensp;&ensp;pick up the feature that results in least weighted_error<br />
+&ensp;&ensp;&ensp;compute the coefficient \(\hat{w} \) for this classifier<br />
+&ensp;&ensp;&ensp;then recompute weights \( \alpha_i\)<br />
+&ensp;&ensp;&ensp;normalize \(\alpha_i \)  </p>
 <hr />
-<p>From the basic steps, we have two problems: 1 how to choose the feature? 2 when to stop the recursive process? For the first question we can use the classification error to sift out the best feature.  </p>
-<p>To make a prediction we follow the majority vote principal. The major class will represent the class of the split. For example we have credit and term to consider the split. We can calculate classification error respectively and choose the better one. </p>
-<p><img alt="clim11" src="/images/clim11.png" />  </p>
-<p>We don't mention the entropy here since the effect will be the same. Entropy stuff will be provided later.  </p>
-<p>Another practical issue is how to deal with the continous numeric data. The answer is very natural: just use a threshold to split. The way to find the threshold is also simple.  </p>
-<hr />
-<p>step 1: sort the values of a feature \(h_j(x) \)<br />
-&ensp;&ensp;&ensp;let \(v_1,v_2,...v_N \) denote sorted values.  </p>
-<p>step 2: For \(i=1,...N-1 \)<br />
-&ensp;&ensp;&ensp; consider split \(t_i=(v_i+v_{i+1})/2 \)<br />
-&ensp;&ensp;&ensp; compute classification error for threshold split \(h_j(x) &gt;= t_i \)  </p>
-<p>&ensp;&ensp;&ensp; choose the \( t^*\) with the lowest classification error  </p>
-<hr />
-<p>Note that for the threshold split, we can reuse the features!  For the predictions we can also consider them as probabilities of the corresponding result. A key note for students who are struggling for machine learning tests: XOR is always a good example as an opposite. So when you come across questions like "list a opposite example blablabla" think about the XOR table.  </p>
-<h1>Preventing Overfitting</h1>
-<p>Training error reduces as depth increases but it's highly possible to be overfitting.  </p>
-<p><img alt="clim12" src="/images/clim12.png" /></p>
-<p>It is because every split will choose the lowest classification error which means reduce the training error. 
-According to <em>Occam Razor</em>, simpler trees means better model. For those who are not familar with <em>Occam Razor</em>, we give a brief note here: Among competing hypotheses, the one with fewest assumptions should be selected. We will cover it in more details in statistic folder. For example, we have model_1 and model_2. Model_1 has training error of 0.12 and validation error of 0.15. Model_2 has training error of 0.07 and validation error of 0.15. We will pick the model_1 since both of the two have the same validation error but the model_1 is a simpler one. To pick a simpler tree, we have two ways: The first one is stop learning algorithm before tree become too complex, which is early stopping. The second one is simplify tree after learning algorithm terminates, which is pruning.  </p>
-<h4>Early stopping</h4>
-<p>Condition 1: We can limit the depth of a tree. To set the maximum depth of a tree we can use the validation method. Condition 2: We can use classification error to limit the tree depth. If the classification error will not reduce as split goes on, we should stop. So a threshold error needs to be set in advance. Condition 3: We can stop if number of data points in a node is too small. So a minimum data point number should be set in advance.  </p>
-<h4>Pruning</h4>
-<p>The normal stopping conditions: all examples have the same target value and no more features to split on. We have introduced some early stopping conditions but there are some challenges with early stopping conditions. For example, for the early stopping condition 1, it is actually hard to know exactly when and where to stop. For the early stopping condition 2, we may miss good split after the useless split. To prove it, we can use XOR example here.(like i said, XOR is really a good opposite example for many problems). So the idea becomes: first train a complete tree, then prune it!  </p>
-<p>Formalization can be written as follows:  </p>
-<div class="math">$$cost = error(T) + \lambda L(T)$$</div>
-<p>where \(error(T) \) means the classification error and \(L(T) \) is the number of leaves. If \( \lambda = 0\), then it becomes a standard decision tree learning. If \(\lambda = \infty \), then \( \hat{y} = majority\). If \(\lambda \) in between, we get a balance between fit and complexity.  </p>
-<h1>Handling Missing Data</h1>
-<p>Strategy 1: Purification by skipping<br />
-If a few points contains unknown values, skip those points.<br />
-If a lot of points contain unknown values in certain feature, then skip that feature.<br />
-This idea is easy to understand but may lose important information.  </p>
-<p>Strategy 2: Purification by inputting missing data<br />
-Input rules 1<br />
-For categorical features, we use the majority value.<br />
-Input rules 2<br />
-For numerical features, we use the average or median.<br />
-There are some advanced methods like EM.<br />
-This idea is easy to understand and can be applied to many models, but may cause systematic errors. For example, feature "age" is missing in all banks in Washingto by state law.  </p>
-<p>Strategy 3: Adapt learning algorithm to be robust to missing data<br />
-For example, in decision trees, we associate "unknown" to one branch. So every decision tree node includes choice of response to missing data. This idea is good for prediction but we have to modify the whole model. Another practical issue is where to put the missing data?(i.e. associate which branch.) The solution is still choose branches which lead to least classification error.  </p>
-<p>Single decision tree or simple models seem very weak. Next we will talk about how to combine them to make a strong classifier.</p>
+<p>We will see as iteration goes on, the training error of boosted classifier will get close to 0. The condition is every iteration we can find a weak learner with weighted_error smaller than 0.5. Compare the gap between train error and test error of boosted decision tumps with that of decision trees, we will see the former one is smaller. As for the iteration times, we can use validation method similar to choose \( \lambda\) in previous contents.  </p>
+<p>Except for Ada boosting, there are other boosting like gradient boosting, also other ensemble methods like random forests(bagging: take a sub set of the data, learn a tree in each subset and average the predictions). Next we will talk about practical issues for huge datasets and better measurements for classifiers. Stay tuned~</p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -141,6 +128,21 @@ For example, in decision trees, we associate "unknown" to one branch. So every d
                 <section id="content" class="body">
                     <h1>Other articles</h1>
                     <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/classification_3_decision_trees.html" rel="bookmark"
+                           title="Permalink to Classification_3_Decision_Trees">Classification_3_Decision_Trees</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Wed 27 April 2016</span>
+<span>| tags: <a href="/tag/classification.html">classification</a></span>
+</footer><!-- /.post-info -->                <p>Previously we always played with models having a linear combination structure. This article will introduce a totally different model. Decision trees are so simple and so powerful that ada-boosting based on decision trees is often the key to win competitions.</p>
+                <a class="readmore" href="/classification_3_decision_trees.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
@@ -261,24 +263,10 @@ For example, in decision trees, we associate "unknown" to one branch. So every d
                 <a class="readmore" href="/regression_1_simple_regression.html">read more</a>
                 </div><!-- /.entry-content -->
             </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/re.html" rel="bookmark"
-                           title="Permalink to First-Blog">First-Blog</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sat 19 March 2016</span>
-<span>| tags: <a href="/tag/pelican.html">pelican</a><a href="/tag/publishing.html">publishing</a></span>
-</footer><!-- /.post-info -->                <p>Try some format</p>
-                <a class="readmore" href="/re.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
             </ol><!-- /#posts-list -->
 <p class="paginator">
-    Page 1 / 1
+    Page 1 / 2
+        <a href="/category/machine_learning2.html">&raquo;</a>
 </p>
             </section><!-- /#content -->
         <section id="extras" class="body">
