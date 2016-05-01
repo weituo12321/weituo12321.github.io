@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
         <meta charset="utf-8" />
-        <title>HardCoreAI - Weituo Hao</title>
+        <title>Classification_5_Large_Datasets_and_Messurments</title>
         <link rel="stylesheet" href="/theme/css/main.css" />
 
         <!--[if IE]>
@@ -18,19 +18,24 @@
                 <h1><a href="/">HardCoreAI </a></h1>
                 <nav><ul>
                     <li><a href="/category/announcement.html">Announcement</a></li>
-                    <li><a href="/category/machine_learning.html">Machine_Learning</a></li>
+                    <li class="active"><a href="/category/machine_learning.html">Machine_Learning</a></li>
                     <li><a href="/category/trial.html">trial</a></li>
                 </ul>
                 </nav>
         </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/classification_5_large_datasets_and_messurments.html" rel="bookmark"
+           title="Permalink to Classification_5_Large_Datasets_and_Messurments">Classification_5_Large_Datasets_and_Messurments</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="/classification_5_large_datasets_and_evaluation.html">Classification_5_Large_Datasets_and_Evaluation</a></h1>
+    <div class="entry-content">
 <footer class="post-info">
         <span>Sat 30 April 2016</span>
 <span>| tags: <a href="/tag/classification.html">classification</a></span>
-</footer><!-- /.post-info --><h1>Stochastic Gradient Descent</h1>
+</footer><!-- /.post-info -->      <h1>Stochastic Gradient Descent</h1>
 <p>Gradient descent is slow! It is because every iteration we need to go through the whole dataset. Since we are ushering into so called big data era, simple models can performs better than fancy models. However, as distribuetd computing and GPU advances, now we can also run complex models. That's why we see boosted trees, tensor factorization, deep learning, massive graphical models running these days. Scaling to huge datasets, we switch from gradient descent to stochastic gradient descent(SGD). There is a story about SGD. SGD represents <em>Student Gradient Descent</em>. It means assistant professors' goal is to get tneure. He or she has to choose students to work with and publish good papers. Year by year, new students come, and assistant professors must choose student, and publish papers. Finally, they get the tenure~ It is very similar to what true SGD does because we choose some data points to update our model. Take logistic regression for example, we have:  </p>
 <p><img alt="im" src="/images/clim14.png" />  </p>
 <p>Instead of using the sum of all the data points, we just use only one data point to update the coefficients. A basic comparison between gradient descent and stochastic gradient descent can be seen as follows:  </p>
@@ -129,152 +134,11 @@ For example, we predicted \(y_1=+1,y_2=-1,y_3=+1\) three data points as +1. So t
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-</script>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <ol id="posts-list" class="hfeed">
+</script>
+    </div><!-- /.entry-content -->
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/classification_4_boosting.html" rel="bookmark"
-                           title="Permalink to Classification_4_Boosting">Classification_4_Boosting</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Thu 28 April 2016</span>
-<span>| tags: <a href="/tag/classification.html">classification</a></span>
-</footer><!-- /.post-info -->                <p>We will talk about the combination of weak classifiers can make big difference in classification. We call it boosting.</p>
-                <a class="readmore" href="/classification_4_boosting.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/classification_3_decision_trees.html" rel="bookmark"
-                           title="Permalink to Classification_3_Decision_Trees">Classification_3_Decision_Trees</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Wed 27 April 2016</span>
-<span>| tags: <a href="/tag/classification.html">classification</a></span>
-</footer><!-- /.post-info -->                <p>Previously we always played with models having a linear combination structure. This article will introduce a totally different model. Decision trees are so simple and so powerful that ada-boosting based on decision trees is often the key to win competitions.</p>
-                <a class="readmore" href="/classification_3_decision_trees.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/classification_1_linear_classifiers.html" rel="bookmark"
-                           title="Permalink to Classification_1_Linear_Classifiers">Classification_1_Linear_Classifiers</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sat 23 April 2016</span>
-<span>| tags: <a href="/tag/classification.html">classification</a></span>
-</footer><!-- /.post-info -->                <p>What is classification? In previous chapter we have talked about regression. Instead of real values, classification outputs predictions as some boolean values or labels. Huge amount of problems in machine learning are classification problems such as sentiment analysis, spam filtering, webpage analysis, image classification, personalized medical diagnosis, etc. The models we will cover in this chapter will be linear classifiers, logistic regression, decision trees, and ensemble methods. If time is allowed, support vector machines will also be included. The algorithms to solve the models are gradient descent, stochastic gradient descent, recursive greedy and boosting. Some practical issues like handling missing data, precision-recall tradeoff, and online learning will also be talked about.</p>
-                <a class="readmore" href="/classification_1_linear_classifiers.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/classification_2_linear_classifiers_2.html" rel="bookmark"
-                           title="Permalink to Classification_2_Linear_Classifiers_2">Classification_2_Linear_Classifiers_2</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sat 23 April 2016</span>
-<span>| tags: <a href="/tag/classification.html">classification</a></span>
-</footer><!-- /.post-info -->                <p>In previous article, we have talked about the basic linear classifiers and some practical issues. So we start from the metric of the models in terms of maximum likelihood estimation.</p>
-                <a class="readmore" href="/classification_2_linear_classifiers_2.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/regression_6_nearest-neighbor-and-kernel-regression.html" rel="bookmark"
-                           title="Permalink to Regression_6_Nearest Neighbor and Kernel Regression">Regression_6_Nearest Neighbor and Kernel Regression</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sun 17 April 2016</span>
-<span>| tags: <a href="/tag/regression.html">regression</a></span>
-</footer><!-- /.post-info -->                <p>Previously we have talked about LASSO in which we used norm 1 as the constraints to select features ad get sparse solutions. In this article, we will continue to discuss nearest neighbor and kernel regression.</p>
-                <a class="readmore" href="/regression_6_nearest-neighbor-and-kernel-regression.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/regression_5_lasso.html" rel="bookmark"
-                           title="Permalink to Regression_5_LASSO">Regression_5_LASSO</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Fri 15 April 2016</span>
-<span>| tags: <a href="/tag/regression.html">regression</a></span>
-</footer><!-- /.post-info -->                <p>Previously we have talked about ridge regression in which we used norm 2 as the constraints to balance the bias and variance. In this article, we will use norm 1 which is called least absolute shrinkage and selection operator and LASSO for short.</p>
-                <a class="readmore" href="/regression_5_lasso.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/regression_4_ridge_regression.html" rel="bookmark"
-                           title="Permalink to Regression_4_Ridge_Regression">Regression_4_Ridge_Regression</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Fri 08 April 2016</span>
-<span>| tags: <a href="/tag/regression.html">regression</a></span>
-</footer><!-- /.post-info -->                <p>Previously we have talked about simple regression and for a machine learning model we want to get a tradeoff between bias and variance. Now we introduce one tuning parameter and check how ridge regression works.</p>
-                <a class="readmore" href="/regression_4_ridge_regression.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/regression_3_simple_regression.html" rel="bookmark"
-                           title="Permalink to Regression_3_Simple_Regression">Regression_3_Simple_Regression</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Tue 05 April 2016</span>
-<span>| tags: <a href="/tag/regression.html">regression</a></span>
-</footer><!-- /.post-info -->                <p>We have generic models and algorithms to solve them. But we always have to worry about how much i am losing. If our model prediction is too low, then we only get low offers; if model prediction is too high, we get few looks and no offers. So this article will presents how to assess our models.</p>
-                <a class="readmore" href="/regression_3_simple_regression.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/regression_2_multiple_regression.html" rel="bookmark"
-                           title="Permalink to Regression_2_Multiple_Regression">Regression_2_Multiple_Regression</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sat 02 April 2016</span>
-<span>| tags: <a href="/tag/regression.html">regression</a></span>
-</footer><!-- /.post-info -->                <p>What is regression? In this article, i start from simple examples and extract out the basic model for regression problems. Then i will continue to talk about practical issues when we use the model to solve real problems.</p>
-                <a class="readmore" href="/regression_2_multiple_regression.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-            </ol><!-- /#posts-list -->
-<p class="paginator">
-    Page 1 / 2
-        <a href="/author/weituo-hao2.html">&raquo;</a>
-</p>
-            </section><!-- /#content -->
+  </article>
+</section>
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>blogroll</h2>

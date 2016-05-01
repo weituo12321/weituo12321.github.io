@@ -26,47 +26,53 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="/classification_4_boosting.html">Classification_4_Boosting</a></h1>
+                    <h1 class="entry-title"><a href="/classification_5_large_datasets_and_evaluation.html">Classification_5_Large_Datasets_and_Evaluation</a></h1>
 <footer class="post-info">
-        <span>Thu 28 April 2016</span>
+        <span>Sat 30 April 2016</span>
 <span>| tags: <a href="/tag/classification.html">classification</a></span>
-</footer><!-- /.post-info --><h1>Boosting</h1>
-<p>As we konw from the discussion on the balance betweeen bias and variance, simple or weak classifiers have low variance but high bias. So an old question is: can a set of weak learners be combined to create a stronger learner? Then answer is YES! Ensemble method is the idea. It is a simple but very powerful approach and widely used in industry and win most Kaggle competitions. 
-Ensemble methods can be displayed as follows:  </p>
-<p><img alt="clim13" src="/images/clim13.png" />  </p>
-<p>General idea of ensemble methods is to train classifiers \(f_1(x), f_2(x),...f_T(x) \) and their coefficients \(\hat{w}_1, ... \hat{w}_T \) and then make the predictions:  </p>
-<div class="math">$$\hat{y}=sign(\sum_{t=1}^T\hat{w}_tf_t(\textbf{x}))$$</div>
-<p>Boosting is based on the ensemble idea. The simple classifier is decision stump which is decision tree of depth one. And boosting focus learning on points lead to high error. The idea is we first assign each data point weights and after the training, we will change the weights of each data points. We will increase the weight of wrong prediction. It's a general way in machine learning and we can take logistic regression as an example:  </p>
-<div class="math">$$w_j^{(t+1)} \leftarrow w_j^{t}+\eta \sum_{i=1}^{N} \alpha_ih_j(x_i)(I[y_i = +1] - P(y=+1|x_i,w))$$</div>
-<p>The \( \alpha_i\) is the weight of data point i.  </p>
-<p>Naturally, there are two practical problems. First, how to compute the coefficient \( \hat{w}_t\). Second, how to recompute weights \( \alpha_i \)  </p>
-<p>For the problem 1:<br />
-We introduce weighted classification error. The total weight of mistakes is <br />
-</p>
-<div class="math">$$ \sum_{i=1}^{N}\alpha_iI(\hat{y}_i \ne y_i) $$</div>
-<p>Total weight of all points is \( \sum_{i=1}^{N}\alpha_i\), and then we have weighted error to measure fraction of weight of mistakes: <em>weighted_error</em> = <em>total weight of mistakes</em> / <em>total weight of all data points</em>  </p>
-<p>The best model's weighted error wil be 0 and the worst will be 1. And the random classifier's weighted error is 0.5.  </p>
-<p>After we have the weighted error, we can compute the coefficients \( \hat{w}_t\) of classifier f_t(x) by following formula:  </p>
-<div class="math">$$\hat{w}_t=\frac{1}{2}ln(\frac{1-error_{weighted}(f_t)}{error_{weighted}(f_t)})$$</div>
-<p>Note that if a classifier's weighted error is too high close to 1 and maintains that "bad" performance, it is actually a awesome classifier since the 1 - <em>bad performance</em> is a pretty good result. This is so called jinx effect.  </p>
-<p>For problem 2:<br />
-if we already have coefficients \( \hat{w}_t\) we can update \(\alpha_i \) where classifier makes mistakes as follows:  </p>
-<p>if \( f_t(x_i)=y_i \), we have \( \alpha_i \leftarrow \alpha_ie^{-\hat{w}_t} \)  </p>
-<p>if \( f_t(x_i) \ne y_i \), we have \( \alpha_i \leftarrow \alpha_ie^{\hat{w}_t} \)  </p>
-<p>However, if data point \( x_i\) is often mistakenly predicted, then its weights \( \alpha_i \) will be very large. On the contrast, it will be very small. This causes numerical instability after many iterations. So a better way is to normalize weights to add up to 1 after every iteration as follows:<br />
-</p>
-<div class="math">$$\alpha_i = \frac{\alpha_i}{\sum_{i=1}^{N}\alpha_i}$$</div>
-<p>Thus we have a general procedure for boosted decison stumps:  </p>
+</footer><!-- /.post-info --><h1>Stochastic Gradient Descent</h1>
+<p>Gradient descent is slow! It is because every iteration we need to go through the whole dataset. Since we are ushering into so called big data era, simple models can performs better than fancy models. However, as distribuetd computing and GPU advances, now we can also run complex models. That's why we see boosted trees, tensor factorization, deep learning, massive graphical models running these days. Scaling to huge datasets, we switch from gradient descent to stochastic gradient descent(SGD). There is a story about SGD. SGD represents <em>Student Gradient Descent</em>. It means assistant professors' goal is to get tneure. He or she has to choose students to work with and publish good papers. Year by year, new students come, and assistant professors must choose student, and publish papers. Finally, they get the tenure~ It is very similar to what true SGD does because we choose some data points to update our model. Take logistic regression for example, we have:  </p>
+<p><img alt="im" src="/images/clim14.png" />  </p>
+<p>Instead of using the sum of all the data points, we just use only one data point to update the coefficients. A basic comparison between gradient descent and stochastic gradient descent can be seen as follows:  </p>
+<p><img alt="im" src="/images/clim15.png" />  </p>
+<p>But why SGD can work? Usually gradient is "best" direction but any direction helps convergence would be helpful. Most data points can increase the gradient. On average, it makes progress.  </p>
+<p>Some practical issues on SGD:<br />
+First, the order of data can introduce bias. So usual way is to shuffle data before running SGD.<br />
+Second, step size \( \eta\) matters. If it is too small, SGD is very slow to converge. If it is too large, SGD oscillates a lot and much worse than GD. We have talked about how to choose the proper step size in previous discussions. (Get lowerbound and upperbound in exponetially space and make step size decrease as iteration increases).<br />
+Third, DO NOT trust the last coefficients by SGD. Instead, use the average weights. For example, \(\hat{w}=\frac{1}{T} \sum_{i=1}^{T}\hat{w}_i \).  </p>
+<h1>Learning From Batches</h1>
+<p>In previous SGD, we update gradient by one data points. Here we update gradient by a batch of data. For example, batch size = 100. In this way, we can decrease noise and make our model more stable. Still, large batch size causes slow convergence and small batch size causes too much noise and even no convergence. So SGD with mini-batches is like follows:  </p>
 <hr />
-<p>Start same weights \(\alpha_i =\frac{1}{N} \)<br />
-For t = 1,...T:<br />
-&ensp;&ensp;&ensp;pick up the feature that results in least weighted_error<br />
-&ensp;&ensp;&ensp;compute the coefficient \(\hat{w} \) for this classifier<br />
-&ensp;&ensp;&ensp;then recompute weights \( \alpha_i\)<br />
-&ensp;&ensp;&ensp;normalize \(\alpha_i \)  </p>
+<p>Shuffle data<br />
+Init \(w^{(1)} = 0, t = 1 \)<br />
+Until converged:<br />
+&ensp;&ensp;&ensp;for k=0,...N/B - 1:(for each mini-batch)<br />
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;for j=0,...D:<br />
+</p>
+<div class="math">$$w_j^{(t+1)} \leftarrow w_j^{(t)}+\eta \sum_{i=1+k*B}^{(k+1)B}\frac{\partial l_i(w)}{\partial w_j}$$</div>
+<p><br />
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;\(t\leftarrow t+1 \)  </p>
 <hr />
-<p>We will see as iteration goes on, the training error of boosted classifier will get close to 0. The condition is every iteration we can find a weak learner with weighted_error smaller than 0.5. Compare the gap between train error and test error of boosted decision tumps with that of decision trees, we will see the former one is smaller. As for the iteration times, we can use validation method similar to choose \( \lambda\) in previous contents.  </p>
-<p>Except for Ada boosting, there are other boosting like gradient boosting, also other ensemble methods like random forests(bagging: take a sub set of the data, learn a tree in each subset and average the predictions). Next we will talk about practical issues for huge datasets and better measurements for classifiers. Stay tuned~</p>
+<p>A pracitical issue is how to measure the convergence. We can compute log-likelihood of single data point, then for a iteration t we use the average log-likelihood of previous say 70 data points. It's like a sliding window.  </p>
+<h1>Regularization</h1>
+<p>In common logistic regression we can compute the total derivative as \( \sum_{i=1}^{N} \frac{\partial l_i(w)}{\partial w_j} - 2 \lambda w_j \). In SGD, we can compute the total derivative as:<br />
+</p>
+<div class="math">$$\sum_{i=1}^{N} \frac{\partial l_i(w)}{\partial w_j} - \frac{2}{N} \lambda w_j $$</div>
+<h1>Online Learning</h1>
+<p>SGD is very useful in online learning. Online learning is geard  towards the situation where models must be trained as new data comes. For example, advertisement targeting requires updating coefficients immediately. The good thing is that model is always up to date and often more accurate and don't need to store all data. The bad thing is the overall system is complex and cost a lot to money. So most companies opt for systems that save data and update coefficients every night or every week.  </p>
+<h1>Precision and Recall</h1>
+<p>We used error and accuracy to evaluate the regression and classification model. Sometimes these criteria is not perfect for classifiers. One may ask: what does it mean for good performance? For example, if we own a restaurant and our website shows 10 sentences from recent reviews. Precision means "Did i mistakenly show a negative sentence?" and Recall means "Did i not show a great positive sentence?" Accuracy doesn't capture these issues well.  </p>
+<h4>Formal definition</h4>
+<p>precision: fraction of positive predictions are really predictions.
+For example, we predicted \(y_1=+1,y_2=-1,y_3=+1\) three data points as +1. So the precision is \( \frac{2}{3}\). It means precision = true positive / (true positive + false positive). High precision means positive predictions are likely to be true positive   </p>
+<p>recall: fraction of positive data predicted to be postive. It means recall = true positive / (true positive + false negative). High recall means positive data are likely to be discovered.  </p>
+<h4>precision_recall evaluation</h4>
+<p>Given a model that has high recall and low precision, we say it is optimistic model. For example, we predict all the data to be  positive, then the recall will be 1 but the precision will be very low.  </p>
+<p>Given a model that has high precision but low recall, we say it is a pessimistic model.For example, we often predict data to be negative and only a few data to be positve. So the precision may be 1 but the recall is low.  </p>
+<p>We need to adjust our model between optimistic and pessimistic model. An extra parameter \(\lambda \) can be used. For example, if \(\hat{P}(y=+1|x_i)&gt; \lambda \), \(\hat{y}_i = +1,else \hat{y}_i=-1 \). We will see that if \(\lambda=0.99 \) the model is pessimistic. If \( \lambda=0.01\), the model is positive.  </p>
+<p>We can draw precision versus recall in a 2D plane and adjust the \(\lambda \) to see the performance of a model as follows:  </p>
+<p><img alt="im" src="/images/clim16.png" />  </p>
+<p>Seen from the figure above, model B is better. What if two curves ross each other? We can use some other measures like F1 measure or area_under_the_curve(AUC). We often fix the number of predictions to show. For example, only 5 sentences are showing on the restaurant website, and then the precision is at k=5.  </p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -128,6 +134,21 @@ For t = 1,...T:<br />
                 <section id="content" class="body">
                     <h1>Other articles</h1>
                     <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/classification_4_boosting.html" rel="bookmark"
+                           title="Permalink to Classification_4_Boosting">Classification_4_Boosting</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Thu 28 April 2016</span>
+<span>| tags: <a href="/tag/classification.html">classification</a></span>
+</footer><!-- /.post-info -->                <p>We will talk about the combination of weak classifiers can make big difference in classification. We call it boosting.</p>
+                <a class="readmore" href="/classification_4_boosting.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
