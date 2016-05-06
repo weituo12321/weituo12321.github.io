@@ -26,53 +26,130 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="/classification_5_large_datasets_and_evaluation.html">Classification_5_Large_Datasets_and_Evaluation</a></h1>
+                    <h1 class="entry-title"><a href="/classification_6_data_preprocessing.html">Classification_6_Data_Preprocessing</a></h1>
 <footer class="post-info">
-        <span>Sat 30 April 2016</span>
-<span>| tags: <a href="/tag/classification.html">classification</a></span>
-</footer><!-- /.post-info --><h1>Stochastic Gradient Descent</h1>
-<p>Gradient descent is slow! It is because every iteration we need to go through the whole dataset. Since we are ushering into so called big data era, simple models can performs better than fancy models. However, as distribuetd computing and GPU advances, now we can also run complex models. That's why we see boosted trees, tensor factorization, deep learning, massive graphical models running these days. Scaling to huge datasets, we switch from gradient descent to stochastic gradient descent(SGD). There is a story about SGD. SGD represents <em>Student Gradient Descent</em>. It means assistant professors' goal is to get tneure. He or she has to choose students to work with and publish good papers. Year by year, new students come, and assistant professors must choose student, and publish papers. Finally, they get the tenure~ It is very similar to what true SGD does because we choose some data points to update our model. Take logistic regression for example, we have:  </p>
-<p><img alt="im" src="/images/clim14.png" />  </p>
-<p>Instead of using the sum of all the data points, we just use only one data point to update the coefficients. A basic comparison between gradient descent and stochastic gradient descent can be seen as follows:  </p>
-<p><img alt="im" src="/images/clim15.png" />  </p>
-<p>But why SGD can work? Usually gradient is "best" direction but any direction helps convergence would be helpful. Most data points can increase the gradient. On average, it makes progress.  </p>
-<p>Some practical issues on SGD:<br />
-First, the order of data can introduce bias. So usual way is to shuffle data before running SGD.<br />
-Second, step size \( \eta\) matters. If it is too small, SGD is very slow to converge. If it is too large, SGD oscillates a lot and much worse than GD. We have talked about how to choose the proper step size in previous discussions. (Get lowerbound and upperbound in exponetially space and make step size decrease as iteration increases).<br />
-Third, DO NOT trust the last coefficients by SGD. Instead, use the average weights. For example, \(\hat{w}=\frac{1}{T} \sum_{i=1}^{T}\hat{w}_i \).  </p>
-<h1>Learning From Batches</h1>
-<p>In previous SGD, we update gradient by one data points. Here we update gradient by a batch of data. For example, batch size = 100. In this way, we can decrease noise and make our model more stable. Still, large batch size causes slow convergence and small batch size causes too much noise and even no convergence. So SGD with mini-batches is like follows:  </p>
-<hr />
-<p>Shuffle data<br />
-Init \(w^{(1)} = 0, t = 1 \)<br />
-Until converged:<br />
-&ensp;&ensp;&ensp;for k=0,...N/B - 1:(for each mini-batch)<br />
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;for j=0,...D:<br />
+        <span>Thu 05 May 2016</span>
+<span>| tags: <a href="/tag/data-science.html">data science</a></span>
+</footer><!-- /.post-info --><h1>Data Exploration</h1>
+<p>Basic steps:<br />
+1. Variable Identification<br />
+2. Univariate Analysis<br />
+3. Bi-variate Analysis<br />
+4. Missing values treatment<br />
+5. Outlier treatment<br />
+6. Variable transformation<br />
+7. Variable creation  </p>
+<p>We may iterate over steps 4-7 multiple times before we come up wiht refined model.  </p>
+<h4>Step 1: Varibale Identification</h4>
+<p>In this step, we must get clear following questions: What are the input and output variables ? What the data type of each variable ? What the category of each variable ?  </p>
+<p>Type of variable:<br />
+Input<br />
+Output  </p>
+<p>Data type:<br />
+Character<br />
+Numeric  </p>
+<p>Variable Category:<br />
+Categorical<br />
+Continuous  </p>
+<h4>Step 2: Univariate Analysis</h4>
+<p>In this step, we explore variables one by one. Methods used to exlpore the data depend on the category of the variable.  </p>
+<p>2.1 For continuous variable, we need to understand the central tendency and spread of the variable.  </p>
+<p>Central Tendency:<br />
+Mean<br />
+Median<br />
+Mode<br />
+Min<br />
+Max  </p>
+<p>Measure of Dispersion:<br />
+Range<br />
+Quartile<br />
+Variance<br />
+Standard Deviation<br />
+Skewness and Kurtosis  </p>
+<p>Visualization Methods:<br />
+Histogram<br />
+Box plot  </p>
+<p>2.2 For categorical variables, we need to use frequency table to understand distribution of each category. We also read some percentage information of values under each category. Bar chart will be helpful as visualization.  </p>
+<h4>Step 3: Bi-variate Analysis</h4>
+<p>In this step, we find out the relationship between two variables. We can explore the association and disassociation between variables at a pre-defined significance level. The combination of variables can be categorical &amp; categorical, categorical &amp; continuous, continuous &amp; continuous.  </p>
+<p>3.1 continuous &amp; continuous<br />
+While doing bi-variate analysis between two continuous variables, we should look at scatter plot. The relationship can be linear or non-linear. Then the strength of relationship can be indicated by correlation. Correlation varies between -1 and +1. -1 means perfect negative linear correlation. +1 means perfect positive linear correlation. 0 means no correlation. <br />
 </p>
-<div class="math">$$w_j^{(t+1)} \leftarrow w_j^{(t)}+\eta \sum_{i=1+k*B}^{(k+1)B}\frac{\partial l_i(w)}{\partial w_j}$$</div>
+<div class="math">$$Correlation = \frac{Covairance(X, Y)} {\sqrt{Var(X)*Var(Y)}}$$</div>
+<p>3.2 categorical &amp; categorical<br />
+two-way table : The rows represent the category of one variable and the columns represent the categories of the other variable. We show the count of count% of observations available in each combination of row and column categories. Or we can use stacked column chart to visualize the two-way table.  </p>
+<p>chi-square test: It is used to derive the statistical significance of relationship between the variables. It returns the probability for the computed chi-square distribution with the degree of freedom.<br />
+Probability 0 means both categorical variable are dependent<br />
+Probability 1 means both variables are independent<br />
+Probability less than 0.05 means the relationship between the variables is significant at 95% confidence. The chi-square test statistic for a test of independence of two categorical variables is found by:<br />
+</p>
+<div class="math">$$X^2 = \sum (O - E)^ 2 / E$$</div>
 <p><br />
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;\(t\leftarrow t+1 \)  </p>
-<hr />
-<p>A pracitical issue is how to measure the convergence. We can compute log-likelihood of single data point, then for a iteration t we use the average log-likelihood of previous say 70 data points. It's like a sliding window.  </p>
-<h1>Regularization</h1>
-<p>In common logistic regression we can compute the total derivative as \( \sum_{i=1}^{N} \frac{\partial l_i(w)}{\partial w_j} - 2 \lambda w_j \). In SGD, we can compute the total derivative as:<br />
+where \( O\) represents the observed frequency. \( E\) is the expected frequency under the bull hypothesis and computed by:  </p>
+<div class="math">$$E = \frac{row_total * column_total}{sample size}$$</div>
+<p>Statistical Measure used to analyze the power of relationship are:<br />
+Cramer's V for Nominal Categorical Variable<br />
+Mantel-Haenszed Chi-Square for ordinal categorical variable.  </p>
+<p>3.3 categorical &amp; continuous:<br />
+Z-test/T-test: Either test assess whether mean of two groups are statistically different from each other or not.<br />
 </p>
-<div class="math">$$\sum_{i=1}^{N} \frac{\partial l_i(w)}{\partial w_j} - \frac{2}{N} \lambda w_j $$</div>
-<h1>Online Learning</h1>
-<p>SGD is very useful in online learning. Online learning is geard  towards the situation where models must be trained as new data comes. For example, advertisement targeting requires updating coefficients immediately. The good thing is that model is always up to date and often more accurate and don't need to store all data. The bad thing is the overall system is complex and cost a lot to money. So most companies opt for systems that save data and update coefficients every night or every week.  </p>
-<h1>Precision and Recall</h1>
-<p>We used error and accuracy to evaluate the regression and classification model. Sometimes these criteria is not perfect for classifiers. One may ask: what does it mean for good performance? For example, if we own a restaurant and our website shows 10 sentences from recent reviews. Precision means "Did i mistakenly show a negative sentence?" and Recall means "Did i not show a great positive sentence?" Accuracy doesn't capture these issues well.  </p>
-<h4>Formal definition</h4>
-<p>precision: fraction of positive predictions are really predictions.
-For example, we predicted \(y_1=+1,y_2=-1,y_3=+1\) three data points as +1. So the precision is \( \frac{2}{3}\). It means precision = true positive / (true positive + false positive). High precision means positive predictions are likely to be true positive   </p>
-<p>recall: fraction of positive data predicted to be postive. It means recall = true positive / (true positive + false negative). High recall means positive data are likely to be discovered.  </p>
-<h4>precision_recall evaluation</h4>
-<p>Given a model that has high recall and low precision, we say it is optimistic model. For example, we predict all the data to be  positive, then the recall will be 1 but the precision will be very low.  </p>
-<p>Given a model that has high precision but low recall, we say it is a pessimistic model.For example, we often predict data to be negative and only a few data to be positve. So the precision may be 1 but the recall is low.  </p>
-<p>We need to adjust our model between optimistic and pessimistic model. An extra parameter \(\lambda \) can be used. For example, if \(\hat{P}(y=+1|x_i)&gt; \lambda \), \(\hat{y}_i = +1,else \hat{y}_i=-1 \). We will see that if \(\lambda=0.99 \) the model is pessimistic. If \( \lambda=0.01\), the model is positive.  </p>
-<p>We can draw precision versus recall in a 2D plane and adjust the \(\lambda \) to see the performance of a model as follows:  </p>
-<p><img alt="im" src="/images/clim16.png" />  </p>
-<p>Seen from the figure above, model B is better. What if two curves ross each other? We can use some other measures like F1 measure or area_under_the_curve(AUC). We often fix the number of predictions to show. For example, only 5 sentences are showing on the restaurant website, and then the precision is at k=5.  </p>
+<div class="math">$$z= \frac{|\bar{x_1} - \bar{x_2}|}{\sqrt{ \frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}}$$</div>
+<p><br />
+If the probability of \( Z\) is small then the difference of two averages is more significant. The T-test is very similar to Z-test but it is used when number of observation for both categoires is less than 30.  </p>
+<h4>Step 4: Missing Value Treatment</h4>
+<p>Missing value can lead to bias of our model then wrong predicton or classification. They may be caused by data extraction and data collection. There are missing completely at random (missing variable is same for all observations), missing at random(variable is missing at random and missing ratio varies for different values or other input variables, for example, we are collectiong data for age and female has higher missing value compare to male), missing that depends on unobserved predictors and missing that depends on the missing value itself (for example, people with higher or lower income are likely to provide non-response to their earning).  </p>
+<p>Four ways to trreat missing values
+4.1 Deletion<br />
+We have talked about the deletion ways in previous "how to handle missing data". Note that the deletion methods are used when the nature of missing data is "Missing completely at random" </p>
+<p>4.2 Mean/Mode/Median Imputation<br />
+Mean and Median imputation is used for quantitatie attributes and mode is used for qualitive attributes. It can be two types:<br />
+Generalized Imputation: we calculate the mean or median for all non missing values.<br />
+Similar Case Imputation: For example, we calculate the average earning for "Male" and "Female" separately. And use the averages to replace the missing value with the same gender.  </p>
+<p>4.3 Prediction Model<br />
+It is a sophiscated way to substitute missing data. In this case, we divide our data set into two sets: one set with no missing values and another with missing values. Next we create a model to predict missing attributes based on other attributes. We can use regression, ANOVA, logistic regression to perform this. But two drawbacks for this approach:<br />
+1 The model estimated values are usually more well-behaved than the true values.<br />
+2 If there are no relationships with attributes in the data set and the attribute with missing values, then the model will not be precise for estimating missing values.  </p>
+<p>4.4 KNN Imputation<br />
+The missing values of an attribute are imputed using the given number of attributes that are most similar to the attribute whose values are missing. The similarity of two attributes is determined using a distance function. 
+Pros: knn can predict both quantitative and qualitative attributes, no model is required and attributes with multiple missing values can be easily treated.<br />
+Cons: knn is very time-consuming and the choice k is very critical to the performance.  </p>
+<h4>Step 5: Outlier Detection and Treatment</h4>
+<p>Outlier can lead to wildly wrong estimations. There are two types of outliers: univariate and multivariate. Univariate is easy to understand. Outliers can be found when we look at distribution of a single variable. Multivariate outliers are outliers in an n-dimensional space. In order to find them, you have to look at distributions in multi-dimensions.For example, we have two variables height and weight. Two box plots of these variables show no outliers. But if we draw scatter plot in a 2D plane with weight and heigh as axises, we may find some outliers.  </p>
+<p><img alt="im" src="/images/outlier_1.png" /></p>
+<p>Outliers can be artificial or natural. They come from data entry errors, measurement error, experimental error, and so on so forth. Outliers' impact in data are: it increases the error variance and reduces the power of statistical modeling, bias or influence estimates that may be of substantive interest or basic assumption of regression and other statistical model assumpitons.  </p>
+<p>Most commonly used method to detect outliers is visualization. Box-plot, Histogram and scatter plot are important ways to detect outliers. Other thumb rules can also be used like capping methods(any value which out of range of 5th and 95th percentile can be considered as outlier), data points(three or more standard deviation away from mean are considered outlier). Bivariate and multivariabte outliers are typically measured using either an index of influence or leverage, or distance. Popular indices such as Mahalanobis's distance and Cook's D are frequently used to detect outliers.  </p>
+<p>To treat outliers, we have four commonly used ways.<br />
+5.1 Deleting observations<br />
+We delete outlier values if it is due to data entry error, data processing error or outlier observations are very small in numbers. We can also use trimming at both ends to remove outliers.  </p>
+<p>5.2 Transforming and binning values<br />
+Transforming variables can also eliminate outliers. For example, natural log of a value reduces the variation caused by extreme values. Binning is also a form of variable transformation. Decision tree algorithm allows to deal with outliers well due to binning of variable. We can also use the process of assigning weights to different observations.  </p>
+<p>5.3 Imputing<br />
+Like what we did in missing values, we can impute outliers by mean, median or mode only if the outliers are artificial. We can also use statistical model to predict values of outlier observation.  </p>
+<p>5.4 Treat separately<br />
+If there are significant number of outliers, we should treat them separately in the statistical model. One of the approach is to treat both groups as two different groups and build individual model for both groups and them combine the output.  </p>
+<h4>Step 6: Variable Transformation</h4>
+<p>We call step 6 and step 7 both as feature engineering. That's where the art comes into science. We are not adding any new data here, but making data more useful. For example, if we try to predict foot fall in a shopping mall based on dates. But foot fall is less affected by the day of the month than it is by the day of the week. After previous 5 steps, we will start feature engineering. There are two steps: variable transformation and variable creation.  </p>
+<p>Variable transformation means the replacement of a variable by a function. For example we can use the logarithm of x to replace x. This replacement changes the distribution or relationship of a variable with others. A natural question is when to make such data transformation.   </p>
+<p>First, when we want to change the scale of a variable or standardize the values of a variable for better understanding.  </p>
+<p>Second, we can transform complex non-linear relationships into linear relationships. Log transformation is one of the commonly used transformation technique used in these situations.  </p>
+<p>Third, symmetric distribution is preferred over skewed distribution as it is easier to interpret and generate inferences. Some modeling techniques requires normal distribution of variables. So, when we have a skewed distribution, we can use transformation which reduce skewness. For right skewed distribution, we take square/cube root or logarithm of variable. For left skewed, we take square / cube or exponential of variables.  </p>
+<p>Fourth, variable transformation is also done from an implementation point of view. For example, binning of variables using decision tree is also a sort of variable transformation. So commonly used transformation ways are logarithm (powerful to change the shape reducing right skewness but can not be applied to zero or negative values), square/ cube root, binning.  </p>
+<h4>Step 7: Variable Creation</h4>
+<p>Feature / Variable creation is a process to generate new variables /features based on existing variables. For example, if we have date (dd-mm-yy) as an input variable in a data set. We can generate new variables like day, month, year, week, weekday that may have better relationship with target variable. Various techniques to create new features. Two commonly used ways are:  </p>
+<p>7.1 Creating derived variables<br />
+This refers to creating new variables from existing variables using set of functions or different methods. For example in Titanic-Kaggle competition we use the salutation of name as a new variable to predict missing ages.  </p>
+<p>7.2 Creating dummy variables<br />
+One of the most common application of dummy variable is to convert categorical variable into numerical variables. We have talked about this method in our previous articles.  </p>
+<p>Always remember, the more effort on data exploration the better performance the model has. Some other tips for variable creation will be listed as below.  </p>
+<p>7.3 create variables for difference in date, time and addresses<br />
+For example, an applicant who takes days to fill in an application form is likely to be less interested  in the product compared to someone who fills in the same application within 30 minutes. Similarly, a customer living closer to a bank branch is more likely to have a higher engagement than a customer living far off.  </p>
+<p>7.4 Create new ratios and proportions  </p>
+<p>Instead of just keeping inputs and outputs, creating new ratios out of the might add a lot of value. For example, instead of absolute number of card sold, we prefer the ratios like credit card sales / sales person or credit card sales / marketing spend.  </p>
+<p>7.5 Apply standard transformations<br />
+Log, expoenntial, quadratic and trignometric variations creates more representable relationship.  </p>
+<p>7.6 Check variables for seasonality and create the mdoel for right period<br />
+A lot of businesses face some kind of seasonality. It could be driven by tax benefits, festive season or weather.  </p>
+<p>We talked about the different methods and ideas to explore the data. This stage is as important as the model setting up. More approaches and ideas come from experience and practice. The intuition on observations is what we called art, which makes data scientists a hot group of people.  </p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -134,6 +211,21 @@ For example, we predicted \(y_1=+1,y_2=-1,y_3=+1\) three data points as +1. So t
                 <section id="content" class="body">
                     <h1>Other articles</h1>
                     <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/classification_5_large_datasets_and_evaluation.html" rel="bookmark"
+                           title="Permalink to Classification_5_Large_Datasets_and_Evaluation">Classification_5_Large_Datasets_and_Evaluation</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sat 30 April 2016</span>
+<span>| tags: <a href="/tag/classification.html">classification</a></span>
+</footer><!-- /.post-info -->                <p>We will talk about the combination of weak classifiers can make big difference in classification. We call it boosting.</p>
+                <a class="readmore" href="/classification_5_large_datasets_and_evaluation.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
@@ -252,21 +344,6 @@ For example, we predicted \(y_1=+1,y_2=-1,y_3=+1\) three data points as +1. So t
 <span>| tags: <a href="/tag/regression.html">regression</a></span>
 </footer><!-- /.post-info -->                <p>We have generic models and algorithms to solve them. But we always have to worry about how much i am losing. If our model prediction is too low, then we only get low offers; if model prediction is too high, we get few looks and no offers. So this article will presents how to assess our models.</p>
                 <a class="readmore" href="/regression_3_simple_regression.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/regression_2_multiple_regression.html" rel="bookmark"
-                           title="Permalink to Regression_2_Multiple_Regression">Regression_2_Multiple_Regression</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <span>Sat 02 April 2016</span>
-<span>| tags: <a href="/tag/regression.html">regression</a></span>
-</footer><!-- /.post-info -->                <p>What is regression? In this article, i start from simple examples and extract out the basic model for regression problems. Then i will continue to talk about practical issues when we use the model to solve real problems.</p>
-                <a class="readmore" href="/regression_2_multiple_regression.html">read more</a>
                 </div><!-- /.entry-content -->
             </article></li>
             </ol><!-- /#posts-list -->
