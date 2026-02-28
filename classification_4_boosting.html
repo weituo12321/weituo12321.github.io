@@ -1,42 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <meta charset="utf-8" />
-        <title>Classification_4_Boosting</title>
-        <link rel="stylesheet" href="/theme/css/main.css" />
-
-        <!--[if IE]>
-            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Classification 4: Boosting - HardCoreAI</title>
+  <meta name="author" content="Weituo Hao" />
+  <link rel="stylesheet" href="/theme/css/academicpages.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css" />
+  <link rel="stylesheet" href="/theme/css/code_blocks/darkly.css" />
+  <script type="text/javascript" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+  </script>
 </head>
+<body>
 
-<body id="index" class="home">
-<a href="https://github.com/weituo12321">
-<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" />
-</a>
-        <header id="banner" class="body">
-                <h1><a href="/">HardCoreAI </a></h1>
-                <nav><ul>
-                    <li><a href="/category/announcement.html">Announcement</a></li>
-                    <li class="active"><a href="/category/machine_learning.html">Machine_Learning</a></li>
-                    <li><a href="/category/trial.html">trial</a></li>
-                </ul>
-                </nav>
-        </header><!-- /#banner -->
-<section id="content" class="body">
-  <article>
-    <header>
-      <h1 class="entry-title">
-        <a href="/classification_4_boosting.html" rel="bookmark"
-           title="Permalink to Classification_4_Boosting">Classification_4_Boosting</a></h1>
-    </header>
+  <!-- Masthead -->
+  <div class="masthead">
+    <div class="masthead__inner-wrap">
+      <nav class="greedy-nav">
+        <a class="site-title" href="/">HardCoreAI</a>
+        <ul class="visible-links">
+          <li><a href="/publications.html">Publications</a></li>
+          <li><a href="/talks.html">Talks</a></li>
+          <li><a href="/teaching.html">Teaching</a></li>
+          <li><a href="/portfolio.html">Portfolio</a></li>
+          <li><a href="/blog.html">Blog Posts</a></li>
+          <li><a href="/cv.html">CV</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
 
-    <div class="entry-content">
-<footer class="post-info">
-        <span>Thu 28 April 2016</span>
-<span>| tags: <a href="/tag/classification.html">classification</a></span>
-</footer><!-- /.post-info -->      <h1>Boosting</h1>
-<p>As we konw from the discussion on the balance betweeen bias and variance, simple or weak classifiers have low variance but high bias. So an old question is: can a set of weak learners be combined to create a stronger learner? Then answer is YES! Ensemble method is the idea. It is a simple but very powerful approach and widely used in industry and win most Kaggle competitions. 
+  <!-- Main -->
+  <div id="main" role="main">
+
+    <!-- Sidebar -->
+    <div class="sidebar sticky">
+      <div itemscope itemtype="http://schema.org/Person">
+        <div class="author__avatar">
+          <img src="https://avatars.githubusercontent.com/u/13176757?v=4" alt="Weituo Hao" />
+        </div>
+        <div class="author__content">
+          <h3 class="author__name">Weituo Hao</h3>
+          <p class="author__bio">Machine Learning Enthusiast. Stay hungry, stay foolish.</p>
+        </div>
+        <div class="author__urls-wrapper">
+          <ul class="author__urls">
+            <li>
+              <a href="mailto:weituo12321@gmail.com">
+                <i class="fa-solid fa-fw fa-envelope icon-pad-right" aria-hidden="true"></i> Email
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/weituo12321">
+                <i class="fa-brands fa-fw fa-github icon-pad-right" aria-hidden="true"></i> GitHub
+              </a>
+            </li>
+            <li>
+              <a href="https://twitter.com/VicWeituo">
+                <i class="fa-brands fa-fw fa-x-twitter icon-pad-right" aria-hidden="true"></i> Twitter
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <article class="page">
+      <div class="page__inner-wrap">
+        <header>
+          <h1 class="page__title">Classification 4: Boosting</h1>
+        </header>
+        <p class="page__meta">
+          <i class="fa-solid fa-calendar-days"></i> April 28, 2016
+          <span class="page__meta-sep"></span>
+          <a href="/blog.html" class="page__taxonomy-item">classification</a>
+        </p>
+        <section class="page__content">
+      <h1>Boosting</h1>
+<p>As we konw from the discussion on the balance betweeen bias and variance, simple or weak classifiers have low variance but high bias. So an old question is: can a set of weak learners be combined to create a stronger learner? Then answer is YES! Ensemble method is the idea. It is a simple but very powerful approach and widely used in industry and win most Kaggle competitions.
 Ensemble methods can be displayed as follows:  </p>
 <p><img alt="clim13" src="/images/clim13.png" />  </p>
 <p>General idea of ensemble methods is to train classifiers \(f_1(x), f_2(x),...f_T(x) \) and their coefficients \(\hat{w}_1, ... \hat{w}_T \) and then make the predictions:  </p>
@@ -72,89 +116,16 @@ For t = 1,...T:<br />
 <hr />
 <p>We will see as iteration goes on, the training error of boosted classifier will get close to 0. The condition is every iteration we can find a weak learner with weighted_error smaller than 0.5. Compare the gap between train error and test error of boosted decision tumps with that of decision trees, we will see the former one is smaller. As for the iteration times, we can use validation method similar to choose \( \lambda\) in previous contents.  </p>
 <p>Except for Ada boosting, there are other boosting like gradient boosting, also other ensemble methods like random forests(bagging: take a sub set of the data, learn a tree in each subset and average the predictions). Next we will talk about practical issues for huge datasets and better measurements for classifiers. Stay tuned~</p>
-<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
-    var align = "center",
-        indent = "0em",
-        linebreak = "false";
+        </section>
+      </div>
+    </article>
 
-    if (false) {
-        align = (screen.width < 768) ? "left" : align;
-        indent = (screen.width < 768) ? "0em" : indent;
-        linebreak = (screen.width < 768) ? 'true' : linebreak;
-    }
+  </div>
 
-    var mathjaxscript = document.createElement('script');
-    var location_protocol = (false) ? 'https' : document.location.protocol;
-    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
-    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
-    mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
-    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
-        "MathJax.Hub.Config({" +
-        "    config: ['MMLorHTML.js']," +
-        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
-        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
-        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
-        "    displayAlign: '"+ align +"'," +
-        "    displayIndent: '"+ indent +"'," +
-        "    showMathMenu: true," +
-        "    messageStyle: 'normal'," +
-        "    tex2jax: { " +
-        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
-        "        displayMath: [ ['$$','$$'] ]," +
-        "        processEscapes: true," +
-        "        preview: 'TeX'," +
-        "    }, " +
-        "    'HTML-CSS': { " +
-        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
-        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
-        "    }, " +
-        "}); " +
-        "if ('default' !== 'default') {" +
-            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-        "}";
-    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
-}
-</script>
-    </div><!-- /.entry-content -->
-
-  </article>
-</section>
-        <section id="extras" class="body">
-                <div class="blogroll">
-                        <h2>blogroll</h2>
-                        <ul>
-                            <li><a href="http://getpelican.com/">Pelican</a></li>
-                            <li><a href="http://python.org/">Python.org</a></li>
-                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
-                        </ul>
-                </div><!-- /.blogroll -->
-                <div class="social">
-                        <h2>social</h2>
-                        <ul>
-
-                            <li><a href="https://twitter.com/VicWeituo">twitter</a></li>
-                            <li><a href="https://github.com/weituo12321">github</a></li>
-                        </ul>
-                </div><!-- /.social -->
-        </section><!-- /#extras -->
-
-        <footer id="contentinfo" class="body">
-                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
-        </footer><!-- /#contentinfo -->
+  <!-- Footer -->
+  <footer class="page__footer">
+    <p>&copy; 2026 Weituo Hao. Powered by <a href="https://pages.github.com/">GitHub Pages</a>.</p>
+  </footer>
 
 </body>
 </html>

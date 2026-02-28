@@ -1,41 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <meta charset="utf-8" />
-        <title>Classification_3_Decision_Trees</title>
-        <link rel="stylesheet" href="/theme/css/main.css" />
-
-        <!--[if IE]>
-            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Classification 3: Decision Trees - HardCoreAI</title>
+  <meta name="author" content="Weituo Hao" />
+  <link rel="stylesheet" href="/theme/css/academicpages.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css" />
+  <link rel="stylesheet" href="/theme/css/code_blocks/darkly.css" />
+  <script type="text/javascript" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+  </script>
 </head>
+<body>
 
-<body id="index" class="home">
-<a href="https://github.com/weituo12321">
-<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" />
-</a>
-        <header id="banner" class="body">
-                <h1><a href="/">HardCoreAI </a></h1>
-                <nav><ul>
-                    <li><a href="/category/announcement.html">Announcement</a></li>
-                    <li class="active"><a href="/category/machine_learning.html">Machine_Learning</a></li>
-                    <li><a href="/category/trial.html">trial</a></li>
-                </ul>
-                </nav>
-        </header><!-- /#banner -->
-<section id="content" class="body">
-  <article>
-    <header>
-      <h1 class="entry-title">
-        <a href="/classification_3_decision_trees.html" rel="bookmark"
-           title="Permalink to Classification_3_Decision_Trees">Classification_3_Decision_Trees</a></h1>
-    </header>
+  <!-- Masthead -->
+  <div class="masthead">
+    <div class="masthead__inner-wrap">
+      <nav class="greedy-nav">
+        <a class="site-title" href="/">HardCoreAI</a>
+        <ul class="visible-links">
+          <li><a href="/publications.html">Publications</a></li>
+          <li><a href="/talks.html">Talks</a></li>
+          <li><a href="/teaching.html">Teaching</a></li>
+          <li><a href="/portfolio.html">Portfolio</a></li>
+          <li><a href="/blog.html">Blog Posts</a></li>
+          <li><a href="/cv.html">CV</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
 
-    <div class="entry-content">
-<footer class="post-info">
-        <span>Wed 27 April 2016</span>
-<span>| tags: <a href="/tag/classification.html">classification</a></span>
-</footer><!-- /.post-info -->      <h1>Decision Tree</h1>
+  <!-- Main -->
+  <div id="main" role="main">
+
+    <!-- Sidebar -->
+    <div class="sidebar sticky">
+      <div itemscope itemtype="http://schema.org/Person">
+        <div class="author__avatar">
+          <img src="https://avatars.githubusercontent.com/u/13176757?v=4" alt="Weituo Hao" />
+        </div>
+        <div class="author__content">
+          <h3 class="author__name">Weituo Hao</h3>
+          <p class="author__bio">Machine Learning Enthusiast. Stay hungry, stay foolish.</p>
+        </div>
+        <div class="author__urls-wrapper">
+          <ul class="author__urls">
+            <li>
+              <a href="mailto:weituo12321@gmail.com">
+                <i class="fa-solid fa-fw fa-envelope icon-pad-right" aria-hidden="true"></i> Email
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/weituo12321">
+                <i class="fa-brands fa-fw fa-github icon-pad-right" aria-hidden="true"></i> GitHub
+              </a>
+            </li>
+            <li>
+              <a href="https://twitter.com/VicWeituo">
+                <i class="fa-brands fa-fw fa-x-twitter icon-pad-right" aria-hidden="true"></i> Twitter
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <article class="page">
+      <div class="page__inner-wrap">
+        <header>
+          <h1 class="page__title">Classification 3: Decision Trees</h1>
+        </header>
+        <p class="page__meta">
+          <i class="fa-solid fa-calendar-days"></i> April 27, 2016
+          <span class="page__meta-sep"></span>
+          <a href="/blog.html" class="page__taxonomy-item">classification</a>
+        </p>
+        <section class="page__content">
+      <h1>Decision Tree</h1>
 <p>Think about a problem: what makes a load risky? We may list factors like credit, income, term, personla info and so on. We call these factors features or attributes. So the basic schema of decision tree as follows:  </p>
 <hr />
 <p>step 1: start with an empty tree<br />
@@ -61,7 +105,7 @@ for each split of the tree:<br />
 <h1>Preventing Overfitting</h1>
 <p>Training error reduces as depth increases but it's highly possible to be overfitting.  </p>
 <p><img alt="clim12" src="/images/clim12.png" /></p>
-<p>It is because every split will choose the lowest classification error which means reduce the training error. 
+<p>It is because every split will choose the lowest classification error which means reduce the training error.
 According to <em>Occam Razor</em>, simpler trees means better model. For those who are not familar with <em>Occam Razor</em>, we give a brief note here: Among competing hypotheses, the one with fewest assumptions should be selected. We will cover it in more details in statistic folder. For example, we have model_1 and model_2. Model_1 has training error of 0.12 and validation error of 0.15. Model_2 has training error of 0.07 and validation error of 0.15. We will pick the model_1 since both of the two have the same validation error but the model_1 is a simpler one. To pick a simpler tree, we have two ways: The first one is stop learning algorithm before tree become too complex, which is early stopping. The second one is simplify tree after learning algorithm terminates, which is pruning.  </p>
 <h4>Early stopping</h4>
 <p>Condition 1: We can limit the depth of a tree. To set the maximum depth of a tree we can use the validation method. Condition 2: We can use classification error to limit the tree depth. If the classification error will not reduce as split goes on, we should stop. So a threshold error needs to be set in advance. Condition 3: We can stop if number of data points in a node is too small. So a minimum data point number should be set in advance.  </p>
@@ -85,89 +129,16 @@ This idea is easy to understand and can be applied to many models, but may cause
 <p>Strategy 3: Adapt learning algorithm to be robust to missing data<br />
 For example, in decision trees, we associate "unknown" to one branch. So every decision tree node includes choice of response to missing data. This idea is good for prediction but we have to modify the whole model. Another practical issue is where to put the missing data?(i.e. associate which branch.) The solution is still choose branches which lead to least classification error.  </p>
 <p>Single decision tree or simple models seem very weak. Next we will talk about how to combine them to make a strong classifier.</p>
-<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
-    var align = "center",
-        indent = "0em",
-        linebreak = "false";
+        </section>
+      </div>
+    </article>
 
-    if (false) {
-        align = (screen.width < 768) ? "left" : align;
-        indent = (screen.width < 768) ? "0em" : indent;
-        linebreak = (screen.width < 768) ? 'true' : linebreak;
-    }
+  </div>
 
-    var mathjaxscript = document.createElement('script');
-    var location_protocol = (false) ? 'https' : document.location.protocol;
-    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
-    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
-    mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
-    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
-        "MathJax.Hub.Config({" +
-        "    config: ['MMLorHTML.js']," +
-        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
-        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
-        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
-        "    displayAlign: '"+ align +"'," +
-        "    displayIndent: '"+ indent +"'," +
-        "    showMathMenu: true," +
-        "    messageStyle: 'normal'," +
-        "    tex2jax: { " +
-        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
-        "        displayMath: [ ['$$','$$'] ]," +
-        "        processEscapes: true," +
-        "        preview: 'TeX'," +
-        "    }, " +
-        "    'HTML-CSS': { " +
-        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
-        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
-        "    }, " +
-        "}); " +
-        "if ('default' !== 'default') {" +
-            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-        "}";
-    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
-}
-</script>
-    </div><!-- /.entry-content -->
-
-  </article>
-</section>
-        <section id="extras" class="body">
-                <div class="blogroll">
-                        <h2>blogroll</h2>
-                        <ul>
-                            <li><a href="http://getpelican.com/">Pelican</a></li>
-                            <li><a href="http://python.org/">Python.org</a></li>
-                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
-                        </ul>
-                </div><!-- /.blogroll -->
-                <div class="social">
-                        <h2>social</h2>
-                        <ul>
-
-                            <li><a href="https://twitter.com/VicWeituo">twitter</a></li>
-                            <li><a href="https://github.com/weituo12321">github</a></li>
-                        </ul>
-                </div><!-- /.social -->
-        </section><!-- /#extras -->
-
-        <footer id="contentinfo" class="body">
-                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
-        </footer><!-- /#contentinfo -->
+  <!-- Footer -->
+  <footer class="page__footer">
+    <p>&copy; 2026 Weituo Hao. Powered by <a href="https://pages.github.com/">GitHub Pages</a>.</p>
+  </footer>
 
 </body>
 </html>

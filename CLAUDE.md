@@ -2,11 +2,10 @@
 
 ## Project Overview
 
-This is **HardCoreAI**, a static blog focused on machine learning education, authored by Weituo Hao. It is built with Pelican (a Python static site generator) and deployed to GitHub Pages. The repository contains only pre-generated HTML output — no source markdown/RST files or Pelican configuration files are present.
+This is **HardCoreAI**, an academic portfolio and machine learning blog authored by Weituo Hao. The site uses an **academicpages-inspired** layout (based on the Minimal Mistakes Jekyll theme aesthetic) and is deployed to GitHub Pages as static HTML. There is no build system — all HTML files are edited and committed directly.
 
 - **Site URL**: https://weituo12321.github.io/
-- **Generator**: Pelican (Python)
-- **Theme**: blueidea (customized version of Clean Blog)
+- **Design**: Academicpages / Minimal Mistakes inspired (two-column layout with sidebar)
 - **Hosting**: GitHub Pages (served from `master` branch)
 - **Author**: Weituo Hao (@VicWeituo on Twitter, weituo12321 on GitHub)
 
@@ -14,122 +13,162 @@ This is **HardCoreAI**, a static blog focused on machine learning education, aut
 
 ```
 /
-├── *.html                  # Pre-generated blog post pages (root level)
-├── author/                 # Author archive pages
-├── category/               # Category archive pages
-├── tag/                    # Tag archive pages
-├── pages/                  # Static pages (Announcement, Introduction, etc.)
-├── feeds/                  # Atom/RSS feed (all.atom.xml)
-├── images/                 # Content images (ML diagrams, charts)
-└── theme/                  # Frontend assets
-    ├── css/                # Stylesheets (Bootstrap, Clean Blog, Pygments)
-    │   └── code_blocks/    # Code syntax highlighting themes
-    ├── js/                 # JavaScript (jQuery, Bootstrap, Clean Blog)
-    ├── fonts/              # Web fonts (Glyphicons, Ubuntu, Holtwood)
-    └── images/             # Theme images and social media icons
-        └── icons/          # Social media icon PNGs
+├── index.html                      # Homepage / About page
+├── blog.html                       # Blog posts archive (year-grouped listing)
+├── publications.html               # Publications (placeholder)
+├── talks.html                      # Talks (placeholder)
+├── teaching.html                   # Teaching (placeholder)
+├── portfolio.html                  # Portfolio (placeholder)
+├── cv.html                         # CV (placeholder)
+├── classification_*.html           # Classification tutorial blog posts
+├── regression_*.html               # Regression tutorial blog posts
+├── introduction.html               # Introduction blog post
+├── images/                         # Content images (ML diagrams, charts)
+├── feeds/                          # Atom/RSS feed
+├── author/                         # Legacy author archive pages
+├── category/                       # Legacy category archive pages
+├── tag/                            # Legacy tag archive pages
+├── pages/                          # Legacy static pages
+└── theme/                          # Frontend assets
+    ├── css/
+    │   ├── academicpages.css       # PRIMARY stylesheet (academicpages layout)
+    │   ├── code_blocks/darkly.css  # Code syntax highlighting (active)
+    │   ├── main.css                # Legacy Pelican theme CSS
+    │   ├── bootstrap*.css          # Legacy Bootstrap CSS
+    │   └── clean-blog*.css         # Legacy Clean Blog CSS
+    ├── js/                         # JavaScript (legacy jQuery, Bootstrap)
+    ├── fonts/                      # Web fonts
+    └── images/                     # Theme images and icons
 ```
 
 ## Technology Stack
 
-| Layer           | Technology                                      |
-|-----------------|------------------------------------------------|
-| Site Generator  | Pelican (Python)                                |
-| Templates       | Jinja2                                          |
-| CSS Framework   | Bootstrap 3.x                                   |
-| JS Libraries    | jQuery, Bootstrap JS, Clean Blog JS             |
-| Math Rendering  | MathJax (loaded from CDN)                       |
-| Icons           | Font Awesome 4.1.0 (CDN), Glyphicons (local)   |
-| Fonts           | Google Fonts (Lora, Open Sans)                  |
-| Code Highlight  | Pygments (darkly theme active)                  |
-| Hosting         | GitHub Pages                                    |
+| Layer           | Technology                                              |
+|-----------------|---------------------------------------------------------|
+| Layout          | Custom academicpages-style (Minimal Mistakes inspired)  |
+| CSS             | Custom `academicpages.css` + code_blocks/darkly.css     |
+| Icons           | Font Awesome 6.x (CDN) + Academicons (CDN)             |
+| Math Rendering  | MathJax 2.7 (CDN)                                      |
+| Code Highlight  | Pygments CSS (darkly theme)                             |
+| Hosting         | GitHub Pages                                            |
 
-## Content Organization
+## Site Navigation
 
-### Categories
-- **Machine_Learning** — primary category with classification and regression articles
-- **Announcement** — site announcements
-- **About** — about page
-- **trial** — test/miscellaneous content
+The top navigation bar links to:
+1. **Home** (`/`) — About page with author bio and ML series overview
+2. **Publications** (`/publications.html`) — Placeholder
+3. **Talks** (`/talks.html`) — Placeholder
+4. **Teaching** (`/teaching.html`) — Placeholder
+5. **Portfolio** (`/portfolio.html`) — Placeholder
+6. **Blog Posts** (`/blog.html`) — Archive of all ML tutorial posts
+7. **CV** (`/cv.html`) — Placeholder
 
-### Tags
-- `classification` (5 articles) — linear classifiers, decision trees, boosting, evaluation, preprocessing
-- `regression` (6 articles) — simple, multiple, ridge, lasso, nearest-neighbor/kernel regression
-- `data-science`, `pelican`, `publishing`
+## Page Layout
 
-### Article Naming Convention
-Blog post HTML files follow the pattern:
-- `classification_N_topic_name.html`
-- `regression_N_topic_name.html`
-
-where `N` is a sequence number within the series.
-
-## Development Workflow
-
-### Important: No Build Pipeline
-This repository contains **only compiled HTML output**. There is:
-- No `pelicanconf.py` or `publishconf.py`
-- No `Makefile` or `fabfile.py`
-- No CI/CD configuration (no GitHub Actions, Travis CI, etc.)
-- No source markdown or reStructuredText files
-
-Content was generated locally with Pelican, then the output was committed directly.
-
-### Deployment
-Push to `master` triggers GitHub Pages deployment automatically. No build step is needed — the HTML files are served as-is.
-
-### To Add or Modify Content
-Since source files are not in this repository, edits must be made directly to the HTML files. Each HTML page follows this structure:
+Every page follows a consistent two-column layout:
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Meta tags, CSS links (main.css, Bootstrap, Clean Blog, darkly.css) -->
-    <!-- Google Fonts, Font Awesome CDN, MathJax CDN -->
+    <!-- Meta, academicpages.css, Font Awesome 6, Academicons, MathJax -->
 </head>
 <body>
-    <!-- GitHub fork ribbon -->
-    <!-- Navigation: site title "HardCoreAI", category links -->
-    <!-- Page header with background image -->
-    <!-- Main content area -->
-    <!-- Sidebar: blogroll, social links -->
-    <!-- Footer: Pelican & theme attribution -->
-    <!-- JS: jQuery, Bootstrap, Clean Blog -->
+    <div class="masthead">         <!-- Top navigation bar -->
+    <div id="main">
+        <div class="sidebar">     <!-- Left: avatar, name, bio, social links -->
+        <article class="page">    <!-- Right: page content -->
+    </div>
+    <footer class="page__footer"> <!-- Bottom footer -->
 </body>
 </html>
 ```
 
+### Sidebar (appears on every page)
+- Author avatar (GitHub avatar)
+- Name: Weituo Hao
+- Bio tagline
+- Social links: Email, GitHub, Twitter
+
+## Content Organization
+
+### Blog Posts (canonical, listed on blog.html)
+
+**Regression Series:**
+1. `regression_1_simple_regression.html` — Simple Regression (March 21, 2016)
+2. `regression_2_multiple_regression.html` — Multiple Regression (April 02, 2016)
+3. `regression_3_simple_regression.html` — Assessing Performance (April 05, 2016)
+4. `regression_4_ridge_regression.html` — Ridge Regression (April 08, 2016)
+5. `regression_5_lasso.html` — LASSO (April 15, 2016)
+6. `regression_6_nearest-neighbor-and-kernel-regression.html` — Nearest Neighbor & Kernel (April 17, 2016)
+
+**Classification Series:**
+1. `classification_1_linear_classifiers.html` — Linear Classifiers (April 23, 2016)
+2. `classification_2_linear_classifiers_2.html` — Linear Classifiers / MLE (April 23, 2016)
+3. `classification_3_decision_trees.html` — Decision Trees (April 27, 2016)
+4. `classification_4_boosting.html` — Boosting (April 28, 2016)
+5. `classification_5_large_datasets_and_evaluation.html` — Large Datasets & Evaluation (April 30, 2016)
+6. `classification_6_data_preprocessing.html` — Data Preprocessing (May 05, 2016)
+
+**Other:**
+- `introduction.html` — Blog introduction (March 20, 2016)
+
+### Legacy / Duplicate Files (not linked from blog.html)
+These files exist but are duplicates or variants from the original Pelican build:
+- `classification_2_decision_trees.html` (duplicate of #3)
+- `classification_4_decision_boosting.html` (duplicate of #4)
+- `classification_4_large_datasets_and_messurments.html` (empty)
+- `classification_5_large_datasets_and_messurments.html` (duplicate of #5)
+- `Announcement.html`, `nothingnew.html`, `re.html` (test posts)
+- `index2.html`, `archives.html`, `authors.html`, `categories.html`, `tags.html` (legacy archive pages)
+
+## Development Workflow
+
+### No Build Pipeline
+This repository contains **only static HTML output**. There is no build system, no Jekyll, no Pelican config. All changes are direct HTML edits.
+
+### Deployment
+Push to `master` triggers GitHub Pages deployment automatically.
+
+### To Add or Modify Content
+Edit HTML files directly. Every page must include:
+1. The `<head>` section with `academicpages.css`, Font Awesome, and MathJax references
+2. The masthead navigation bar
+3. The sidebar with author info
+4. The main content area
+5. The footer
+
 ## Key Conventions
 
-1. **HTML-only edits** — All content changes are direct HTML modifications; there is no build step.
-2. **Consistent layout** — Every page shares the same nav, header, sidebar, and footer structure.
-3. **Bootstrap grid** — Content uses Bootstrap 3.x grid system (`container`, `row`, `col-*` classes).
+1. **HTML-only edits** — All content changes are direct HTML modifications; no build step.
+2. **Consistent layout** — Every page uses the same masthead, sidebar, and footer.
+3. **academicpages.css** — The primary stylesheet at `theme/css/academicpages.css`.
 4. **MathJax for equations** — Mathematical notation uses MathJax loaded from CDN.
-5. **Pygments for code** — Code blocks use Pygments CSS classes with the `darkly` theme (`theme/css/code_blocks/darkly.css`).
+5. **Pygments for code** — Code blocks use Pygments CSS classes with `darkly` theme.
 6. **Image assets** — Content images go in `/images/`; theme images go in `/theme/images/`.
-7. **No minification pipeline** — Both minified and unminified versions of Bootstrap/jQuery are present; pages reference specific versions directly.
+7. **Navigation is hardcoded** — Nav links exist in every HTML file; changes require editing all pages.
 
 ## Common Tasks for AI Assistants
 
 ### Adding a new blog post
-1. Copy an existing article HTML file as a template.
-2. Update the `<title>`, meta tags, header, and article content.
-3. Update `index.html` to include the new post in the listing.
-4. Update relevant `category/`, `tag/`, and `author/` archive pages.
-5. Place any new images in `/images/`.
+1. Copy an existing blog post HTML file (e.g., `regression_1_simple_regression.html`) as a template.
+2. Update `<title>`, `<h1 class="page__title">`, date in `page__meta`, and the content in `page__content`.
+3. Add an entry to `blog.html` in the correct chronological position.
+4. Place any new images in `/images/`.
+
+### Adding content to placeholder pages
+Edit the corresponding HTML file (`publications.html`, `talks.html`, `teaching.html`, `portfolio.html`, `cv.html`) and replace the `placeholder-notice` div with actual content.
 
 ### Fixing styling issues
-- Primary stylesheet: `theme/css/main.css`
-- Bootstrap overrides: `theme/css/clean-blog.css`
-- Code block themes: `theme/css/code_blocks/darkly.css` (active)
+- Primary stylesheet: `theme/css/academicpages.css`
+- Code block theme: `theme/css/code_blocks/darkly.css`
 
-### Updating navigation
-Navigation links are hardcoded in each HTML file's `<nav>` section. Changes must be applied across all pages.
+### Updating navigation or sidebar
+Navigation and sidebar HTML are duplicated in every page file. Global changes require editing all HTML files.
 
 ## Caveats
 
-- **Duplicate/variant files exist** — Some articles have multiple versions (e.g., `classification_2_decision_trees.html` and `classification_3_decision_trees.html`). Take care not to modify the wrong variant.
-- **No templating at build time** — Since there's no build system, global changes (nav, footer, etc.) require editing every HTML file.
-- **Legacy codebase** — Content dates from 2016; libraries (Bootstrap 3, jQuery 1.x, Font Awesome 4.1) are outdated but functional.
+- **Duplicate files exist** — Several legacy article variants remain in the repo. The canonical versions are listed above and linked from `blog.html`.
+- **No templating** — Global changes (nav, sidebar, footer) require editing every HTML file individually.
+- **Legacy assets** — Old Pelican theme files (Bootstrap 3, jQuery, Clean Blog CSS/JS) remain in `/theme/` but are no longer referenced by the active pages.
 - **macOS artifacts** — `.DS_Store` files are present in the repository.
