@@ -1,0 +1,12 @@
+# Jekyll build output and caches
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+
+# Local Ruby dependencies
+vendor/
+.bundle/
+Gemfile.lock
+
+.DS_Store
