@@ -57,6 +57,20 @@
   }
 }
 
+/* Publications list: authors directly above the venue line */
+.pub__authors {
+  margin-bottom: 0.25em;
+}
+
+.pub__venue {
+  margin-top: 0;
+}
+
+.pub__note {
+  font-size: $type-size-6;
+  font-style: italic;
+}
+
 .archive__item-excerpt {
   margin-top: 0;
   font-size: $type-size-6;
